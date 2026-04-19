@@ -36,20 +36,32 @@ if (-not $Python) {
 $pyVersion = & $Python --version
 Write-Host "- Python: $Python ($pyVersion)"
 
+# Persist the resolved Python binary name so skills can read it (no re-detection).
+$userDir = if ($env:JSOS_USER_DIR) { $env:JSOS_USER_DIR } else { Join-Path $env:USERPROFILE "Documents\job-search" }
+try {
+    if (-not (Test-Path $userDir)) { New-Item -ItemType Directory -Force -Path $userDir | Out-Null }
+    Set-Content -Path (Join-Path $userDir ".python-bin") -Value $Python -NoNewline -ErrorAction SilentlyContinue
+    Write-Host "  -> recorded in $userDir\.python-bin"
+} catch {}
+
+# Build the right pip invocation. The `py` launcher needs `-3` to force Python 3.
+$pyArgs = @()
+if ($Python -eq "py") { $pyArgs = @("-3") }
+
 # --- Python packages (with PEP 668 fallbacks) ---
 $pkgs = @("python-jobspy", "openpyxl", "python-docx", "pandas", "pyyaml")
 Write-Host "- Installing Python packages..."
 
 $installed = $false
 # Try plain install first
-& $Python -m pip install --upgrade --quiet @pkgs 2>$null
+& $Python @pyArgs -m pip install --upgrade --quiet @pkgs 2>$null
 if ($LASTEXITCODE -eq 0) {
     Write-Host "  OK python packages installed"
     $installed = $true
 }
 # Fall back to --user
 if (-not $installed) {
-    & $Python -m pip install --upgrade --quiet --user @pkgs 2>$null
+    & $Python @pyArgs -m pip install --upgrade --quiet --user @pkgs 2>$null
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  OK python packages installed (--user)"
         $installed = $true
@@ -57,7 +69,7 @@ if (-not $installed) {
 }
 # Last resort: --break-system-packages
 if (-not $installed) {
-    & $Python -m pip install --upgrade --quiet --break-system-packages @pkgs 2>$null
+    & $Python @pyArgs -m pip install --upgrade --quiet --break-system-packages @pkgs 2>$null
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  OK python packages installed (--break-system-packages)"
         $installed = $true
@@ -71,22 +83,43 @@ if (-not $installed) {
 }
 
 # --- Node + Playwright MCP ---
-if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+# Resolve node/npm/npx via Get-Command so we use .cmd shim paths explicitly.
+# When the script is invoked via `powershell -File ...` from another process,
+# PATHEXT resolution can fail for .cmd wrappers — calling them by full path works.
+$node = (Get-Command node -ErrorAction SilentlyContinue).Source
+$npm  = (Get-Command npm  -ErrorAction SilentlyContinue).Source
+$npx  = (Get-Command npx  -ErrorAction SilentlyContinue).Source
+
+if (-not $node) {
     Write-Host "- Node.js not found. Install from https://nodejs.org/ (LTS) or: winget install OpenJS.NodeJS"
     Write-Host "  Skipping MCP setup for now."
 } else {
-    $nodeVersion = node --version
+    $nodeVersion = & $node --version
     Write-Host "- Node: $nodeVersion"
+
+    # Global install location check — on Windows, npm install -g defaults to
+    # Program Files which needs admin. Warn the user before attempting.
+    if ($npm) {
+        $npmPrefix = & $npm config get prefix 2>$null
+        if ($npmPrefix -like "*Program Files*") {
+            Write-Host "  ! npm global prefix is under Program Files; 'npm install -g' needs admin."
+            Write-Host "    Either re-run this installer from an elevated PowerShell, or run:"
+            Write-Host '      npm config set prefix "$env:APPDATA\npm"'
+            Write-Host "    and try again."
+        }
+    }
 
     $mcpInstalled = $false
     try {
-        $npmList = npm list -g --depth=0 2>$null | Out-String
-        if ($npmList -match '@playwright/mcp') { $mcpInstalled = $true }
+        if ($npm) {
+            $npmList = & $npm list -g --depth=0 2>$null | Out-String
+            if ($npmList -match '@playwright/mcp') { $mcpInstalled = $true }
+        }
     } catch {}
 
-    if (-not $mcpInstalled) {
+    if (-not $mcpInstalled -and $npm) {
         Write-Host "- Installing @playwright/mcp globally..."
-        npm install -g @playwright/mcp@latest
+        & $npm install -g "@playwright/mcp@latest"
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  OK @playwright/mcp installed"
         } else {
@@ -96,25 +129,30 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
         Write-Host "  OK @playwright/mcp already installed"
     }
 
-    Write-Host "- Installing Playwright Chromium browser (if missing)..."
-    npx --yes playwright install chromium
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "  OK Chromium ready"
-    } else {
-        Write-Host "  ! Playwright chromium install failed"
+    if ($npx) {
+        Write-Host "- Installing Playwright Chromium browser (if missing)..."
+        & $npx --yes playwright install chromium
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "  OK Chromium ready"
+        } else {
+            Write-Host "  ! Playwright chromium install failed"
+        }
     }
 }
 
 # --- Register Playwright MCP with Claude Code ---
-if (Get-Command claude -ErrorAction SilentlyContinue) {
-    $mcpList = claude mcp list 2>$null | Out-String
+$claude = (Get-Command claude -ErrorAction SilentlyContinue).Source
+if ($claude) {
+    $mcpList = & $claude mcp list 2>$null | Out-String
     if ($mcpList -notmatch 'playwright') {
         Write-Host "- Registering Playwright MCP with Claude Code..."
-        claude mcp add playwright -- npx @playwright/mcp@latest
+        # Quote the '--' so PowerShell doesn't swallow it as an arg separator.
+        & $claude mcp add playwright '--' npx '@playwright/mcp@latest'
         if ($LASTEXITCODE -eq 0) {
             Write-Host "  OK MCP server registered"
         } else {
-            Write-Host "  ! Register failed - try manually: claude mcp add playwright -- npx @playwright/mcp@latest"
+            Write-Host "  ! Register failed - try manually from an interactive shell:"
+            Write-Host '    claude mcp add playwright -- npx @playwright/mcp@latest'
         }
     } else {
         Write-Host "  OK Playwright MCP already registered"
@@ -147,7 +185,7 @@ Write-Host ""
 Write-Host "- Verifying installs..."
 $verifyScript = "import jobspy, openpyxl, docx, pandas, yaml"
 $errFile = Join-Path $env:TEMP "jsos_verify.err"
-& $Python -c $verifyScript 2>$errFile
+& $Python @pyArgs -c $verifyScript 2>$errFile
 if ($LASTEXITCODE -eq 0) {
     Write-Host "  OK all python packages importable"
 } else {

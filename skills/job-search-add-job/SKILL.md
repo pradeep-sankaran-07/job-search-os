@@ -12,6 +12,17 @@ allowed-tools:
 
 You are adding one job to the user's tracker. Run the full recipe — do NOT pause mid-way.
 
+## Intent
+
+Give the user a consistent entry point for a job they found outside the daily search (a friend's tip, a screenshot, a direct URL). The tracker must end up with a row that looks identical to a daily-run row, with the same trust guarantees (URL-sourced → verified live; no URL → marked ⚠️ Unverified manual entry). Don't invent verification. Don't lose the role silently.
+
+## Python binary resolution
+
+Windows users don't have `python3` on PATH. Before running any Python command, resolve the binary:
+1. Read `<user_dir>/.python-bin` if it exists (the install script writes it).
+2. Otherwise probe: `python3` → `python` → `py -3`. Use the first that works.
+3. Refer to the resolved binary as `<python>` throughout this skill.
+
 ## Working directory
 
 User's data: `~/Documents/job-search/` (or whatever is set in `~/.claude/settings.json` under `jobSearchOs.userDataPath`).

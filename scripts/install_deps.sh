@@ -33,6 +33,12 @@ fi
 
 echo "• Python: $PYTHON ($("$PYTHON" --version))"
 
+# Persist the resolved Python binary so skills can read it (no need to re-detect).
+USER_DIR="${JSOS_USER_DIR:-$HOME/Documents/job-search}"
+mkdir -p "$USER_DIR" 2>/dev/null
+echo "$PYTHON" > "$USER_DIR/.python-bin" 2>/dev/null && \
+  echo "  → recorded in $USER_DIR/.python-bin"
+
 # --- Python packages ---
 # Handle PEP 668 "externally-managed-environment" on modern Homebrew/Debian Python:
 # try plain install first, fall back to --user, then to --break-system-packages.

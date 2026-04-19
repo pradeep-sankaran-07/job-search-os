@@ -28,13 +28,27 @@ allowed-tools:
 
 You are running the user's daily job search. This skill executes end-to-end without pausing for user input. Report at the end, not mid-run.
 
+## Intent (read this before starting)
+
+This skill's job is to give the user a pre-vetted list of roles to review each morning, plus a first-draft cover letter for every Strong fit. The tracker is the trust surface — nothing ghost-listed, nothing unverified. Every other behavior follows from that. When a tool isn't available or a source is down, fall back to what still hits the intent (see CLAUDE.md §12 for the self-correction map). Never crash the whole run because one source fails.
+
+## Python binary resolution (first thing to do in any bash step)
+
+Windows users have `python.exe` or `py.exe`, not `python3`. Resolve the binary once, then use it everywhere in this skill run:
+
+1. If `<user_dir>/.python-bin` exists, read it — that's the binary the install script wrote.
+2. Otherwise probe: try `python3`, then `python`, then `py -3` (in that order). Use the first that runs `--version` successfully.
+3. Write the chosen binary to `<user_dir>/.python-bin` for next time.
+
+In the examples below, `<python>` means "whatever you resolved".
+
 ## Working directory
 
 The user's data lives in `~/Documents/job-search/` (or whatever path is in `~/.claude/settings.json` under `jobSearchOs.userDataPath`). Resolve every file path relative to that directory.
 
 Expected files:
 - `profile.yaml` — who the user is, what they want, what they avoid
-- `target-companies.md` — tiered company list from deep research
+- `Target Companies.pdf` (or similar — see Step 1) — tiered company list from the Claude Chat Research handoff
 - `sources.yaml` — which sources are enabled and how
 - `tracker.xlsx` — the Excel tracker
 - `cover-letters.docx` — cover letters + LinkedIn outreach
@@ -51,7 +65,7 @@ Plugin directory (for scripts and adapters):
 ## Step 1: Load profile and tracker
 
 1. Parse `profile.yaml`. Extract: target_titles, target_locations, seniority_level, target_domains, hard_filters, min_seniority, voice_snippet.
-2. Parse `target-companies.md`. Extract the company name, tier, and careers URL for each row. Group by tier.
+2. Find and parse the target-companies file in `<user_dir>/`. Accept any of these filenames (case-insensitive): `Target Companies.pdf`, `target-companies.pdf`, `target-companies.md`, `target-companies.txt`, `target-companies.docx`. Read the file (Claude Code can read PDFs and docx natively). Extract the company name, tier, and careers URL for each row. Group by tier. If no target-companies file is present, stop with "target-companies file missing — re-run `/job-search-setup` and complete the Claude Chat handoff."
 3. Parse `sources.yaml`. Note which sources are `enabled: true` and what their `method` and `priority` are.
 4. Open `tracker.xlsx` with openpyxl. Sheets: `Jobs`, `Archive`.
 5. Build `seen_keys`: set of `(company.lower().strip(), title.lower().strip())` from both sheets.

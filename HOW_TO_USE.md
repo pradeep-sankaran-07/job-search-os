@@ -24,13 +24,20 @@ You do **not** need a GitHub account. You do not need to know Python, terminals,
 
 ### Step 1 — Install Claude Code
 
-On macOS or Linux, open a terminal and run:
+**macOS / Linux**: open the Terminal app. On macOS, press `⌘+Space`, type "Terminal", hit Enter.
+
+**Windows**: open **Windows Terminal** or **PowerShell** (search either in the Start menu — don't use the legacy `cmd.exe`).
+
+In the terminal you opened, run:
 ```
 npm install -g @anthropic-ai/claude-code
 ```
 Then type `claude` to start. Sign in with your Claude account.
 
-If you don't have Node.js / npm installed yet, install it first: https://nodejs.org (pick the LTS version) or via Homebrew on macOS (`brew install node`).
+If you don't have Node.js / npm installed yet, install it first:
+- **macOS**: https://nodejs.org (LTS) or `brew install node`
+- **Linux**: your package manager (`apt install nodejs npm` etc.) or https://nodejs.org
+- **Windows**: https://nodejs.org → download the **LTS MSI installer**, run it, restart your terminal
 
 ### Step 2 — Install the Chrome extension (for LinkedIn)
 

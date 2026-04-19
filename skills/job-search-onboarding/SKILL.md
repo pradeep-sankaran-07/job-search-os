@@ -6,17 +6,36 @@ allowed-tools:
   - Write
   - Edit
   - Bash(python3:*)
+  - Bash(python:*)
+  - Bash(py:*)
   - Bash(bash:*)
+  - Bash(powershell:*)
+  - Bash(pwsh:*)
   - Bash(mkdir:*)
   - Bash(ls:*)
   - Bash(which:*)
+  - Bash(where:*)
   - Bash(npm:*)
   - Bash(npx:*)
   - Bash(claude:*)
-  - AskUserQuestion
 ---
 
 You are walking a non-technical user through first-time setup. Be decisive. Batch your questions. Install things without asking. Only interrupt for real user decisions.
+
+## Intent
+
+Take the user from zero (nothing installed, no profile) to ready-to-run in about 15 minutes, with ≤ 4 question batches and ≤ 3 permission prompts. The user is non-technical — every friction point you remove is a step they can't mess up. If a tool isn't available on their platform (Windows vs macOS vs Linux), silently fall back to the platform-appropriate alternative per CLAUDE.md §11 + §12. Do not make the user fix anything you could have fixed for them.
+
+The end-state this skill produces:
+- `<user_dir>/` folder with the right subfolders
+- `<user_dir>/cv/cv.pdf` (or docx) + optional `cv_polished.*`
+- `<user_dir>/profile.yaml` with target titles, locations, seniority, filters, voice snippet
+- `<user_dir>/sources.yaml` with the user's enabled sources
+- `<user_dir>/tracker.xlsx` (empty, schema-correct)
+- `<user_dir>/cover-letters.docx` (empty, ready to append)
+- `<user_dir>/.python-bin` written by the install script so later skills skip binary detection
+- `<user_dir>/.schedule.yaml` recording the chosen schedule (or `mode: manual`)
+- Target companies: the user has been handed off to Claude Chat and returned with `Target Companies.pdf`
 
 ## Target interaction budget
 
@@ -37,8 +56,10 @@ Print a one-line state summary: `"Found existing setup at <path>. Profile: <comp
 
 ## Step 2: Pick folder and merge settings (batch 1 — at most 2 questions)
 
+**Windows OneDrive check first** — if the user is on Windows, resolve `~/Documents` and check whether the resolved path contains `OneDrive`. If it does, their Documents folder is being synced to the cloud, which can cause Excel file-lock conflicts when the daily run is writing while the user has the tracker open. Flag it in the first question's options.
+
 Ask the user (batch 1):
-1. "Where should your job-search folder live?" (options: default `~/Documents/job-search/`, different path)
+1. "Where should your job-search folder live?" (options: default `~/Documents/job-search/`; outside Documents — `~/job-search/` [recommended on Windows-with-OneDrive to avoid sync conflicts]; different path — free-text)
 2. "May I merge the plugin's permission allowlist into your Claude settings?" (options: Yes — reduces future permission prompts / No — I'll approve each prompt myself)
 
 Then:
@@ -114,17 +135,19 @@ Extract: name, email, phone, current/last title, location, years of experience, 
 
 Collect the profile via 2 batches of `AskUserQuestion`. Ask them immediately after the CV is read — no "shall we continue?" prompt in between.
 
+Claude Code's `AskUserQuestion` tool caps each question at 4 options (the 5th slot is automatically "Other" for free-text). Respect that cap — if a natural set has more options, merge the rarer ones into a single "Other" slot the user can expand.
+
 **Batch 1 — the basics** (4 questions):
-1. "What job titles are you targeting?" (free-text multi-select or "Other" for custom)
-2. "What seniority level?" (IC / Manager / Director / VP / C-level)
-3. "Where will you work?" (multi-select: Norway / Nordic / Remote Europe / Remote Global / Specific city)
-4. "Should I polish your CV for you?" (Yes — save as a new file alongside the original / No — leave it as is)
+1. "What job titles are you targeting?" (free-text; use "Other" to paste your own list)
+2. "What seniority level?" (IC / Manager / Director / VP+ and above)
+3. "Where will you work?" (On-site only / Remote only / Hybrid / Other — free-text for a specific city or region)
+4. "Should I polish your CV?" (Yes — save as a new file / No — leave it / Just show me recommendations)
 
 **Batch 2 — preferences and filters** (4 questions):
-1. "What industries / domains are you interested in?" (multi-select: B2B SaaS / AI / Fintech / Marketplace / Industrial / Healthcare / Other)
-2. "What company stages are okay?" (multi-select: Seed / Series A / Series B / Series C+ / Public / Any)
-3. "Any dealbreakers? What should I NEVER show you?" (multi-select: Crypto/Web3 / Hardware / Consumer goods / Staffing/Contract / Pre-sales / None)
-4. "Paste 1-2 sentences of your own writing (email to a peer, a LinkedIn post, anything) — I'll use it to match your voice in cover letters. Optional — you can skip." (Other for free-text paste; empty = skip)
+1. "What industries / domains?" (B2B SaaS / AI / Fintech / Other — free-text for multi-select)
+2. "What company stages are okay?" (Early / Growth / Established / Any)
+3. "Any dealbreakers? What should I NEVER show you?" (Crypto / Hardware / Staffing / Other — free-text for multi-select; or "None")
+4. "Paste 1-2 sentences of your own writing (email, LinkedIn post, anything) — I'll match your voice in cover letters." (Skip OK)
 
 ### 5c. CV recommendations + polish
 
@@ -164,22 +187,21 @@ Generate the deep-research prompt by reading `<plugin_dir>/templates/deep_resear
 
 Then print this **exact** block to the user — unmistakable sub-steps:
 
-> **This next step happens in Claude chat (claude.ai), not here.**
+> **This next step happens in Claude Chat, not here.**
 >
-> Claude chat has a stronger **Research** mode for multi-source web research — that's why we hand off to it once. Follow these steps exactly:
+> Claude Chat has a stronger **Research** mode for multi-source web research — that's why we hand off to it once. Follow these steps exactly:
 >
-> 1. Open **claude.ai** in your browser. Start a new chat.
+> 1. In the Claude desktop app, switch to **Chat** mode (the mode selector has Chat / Cowork / Code).
 > 2. Turn on **Research** mode (toggle near the chat input).
 > 3. Paste the prompt below. Wait 2–5 minutes while Claude researches.
-> 4. Copy the final company list from Claude's response.
-> 5. Save it as `target-companies.md` in `<user_dir>/`.
-> 6. Come back here to Claude Code and say "continue setup" — I'll pick up from there.
+> 4. Save Claude's response as **`Target Companies.pdf`** in `<user_dir>/`. (Easiest way: Chat's "Export" or your browser's Print → Save as PDF.)
+> 5. Switch back to **Code** mode and say "continue setup" — I'll pick up from there.
 >
 > ```
 > [the filled-in prompt — include the user's profile verbatim]
 > ```
 
-Do NOT attempt to run the deep research yourself in Claude Code. Claude Code's WebSearch is thinner than Claude chat's Research mode — silently substituting it would give the user a weaker target list. The honest path is the handoff.
+Do NOT attempt to run the deep research yourself in Claude Code. Claude Code's WebSearch is thinner than Claude Chat's Research mode — silently substituting it would give the user a weaker target list. The honest path is the handoff.
 
 After printing the block, stop. Wait for the user to come back. Do not continue to Step 9 in the same turn.
 
@@ -195,9 +217,32 @@ If yes, try scheduling in this order:
 
 1. **Preferred**: invoke the `/schedule` skill if it's available in the user's Claude Code install.
 2. **Fallback**: use the `mcp__scheduled-tasks__create_scheduled_task` MCP tool if present.
-3. **Last resort**: if neither is available, write a `<user_dir>/.schedule.yaml` with the requested cron and tell the user: "Scheduling isn't installed on your machine. You'll need to run `/job-search-daily` manually, or install the `schedule` skill from Anthropic. I've saved your preferred time in `.schedule.yaml` so it's ready when you are."
+3. **Platform-native fallback**: if neither is available, generate a one-liner the user can run in their native scheduler. Detect the OS first.
 
-Save the schedule metadata to `<user_dir>/.schedule.yaml` regardless — so `/job-search-status` can report next-run time.
+   **macOS** — print a `launchd` plist and the command to load it:
+   ```
+   # Save the plist below as ~/Library/LaunchAgents/com.jobsearchos.daily.plist,
+   # then run:
+   #   launchctl load ~/Library/LaunchAgents/com.jobsearchos.daily.plist
+   #
+   # Plist calls `claude` to trigger /job-search-daily on the chosen cron.
+   ```
+
+   **Linux** — print a `crontab -e` line:
+   ```
+   0 8 * * 1-5  claude --slash /job-search-daily
+   ```
+
+   **Windows** — print a `schtasks` command the user runs from an elevated terminal once:
+   ```
+   schtasks /Create /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 08:00 /TN "Claude Job Search Daily" /TR "claude --slash /job-search-daily"
+   ```
+
+   Tell the user clearly: "Paste the command above into [Terminal / PowerShell] once. After that, the daily run will fire on schedule as long as your computer is on."
+
+4. **Last resort**: if even the native fallback isn't usable (user declines, or detection fails), write `<user_dir>/.schedule.yaml` with `mode: manual` and tell the user: "I couldn't set up automation on your machine. Run `/job-search-daily` each morning manually when you open Claude Code. Your preferred time is saved — if scheduling becomes available later, re-run `/job-search-setup`."
+
+**Always** save the schedule metadata to `<user_dir>/.schedule.yaml` (including `mode: manual` when falling through) so `/job-search-status` can report the state accurately.
 
 ## Step 10: Final summary
 

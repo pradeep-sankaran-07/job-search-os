@@ -9,6 +9,10 @@ allowed-tools:
 
 You are enabling a job-board source in the user's `sources.yaml`. In v0.1 this is a simple lookup; the auto-detect cascade (library → HTTP → Playwright → Chrome MCP) is planned for v0.2 (see ROADMAP.md).
 
+## Intent
+
+Let the user turn a shipped source on or off, or tell them plainly when a source isn't supported yet. Do not silently fail or pretend a source is enabled when it isn't. If an unsupported source is requested, point the user to the manual-add path (`/job-search-add`) rather than making them write code.
+
 ## Supported sources in v0.1
 
 | Input names (any of these) | Adapter | Method |

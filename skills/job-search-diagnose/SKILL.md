@@ -5,11 +5,25 @@ allowed-tools:
   - Read
   - Bash(ls:*)
   - Bash(python3:*)
+  - Bash(python:*)
+  - Bash(py:*)
   - Bash(pip:*)
+  - Bash(pip3:*)
   - Bash(claude:*)
+  - Bash(grep:*)
+  - Bash(where:*)
+  - Bash(which:*)
 ---
 
 You are reporting the user's setup state. Be concise, structured, and actionable. The user should be able to see the whole state at a glance and know exactly what to do next.
+
+## Intent
+
+Give the user (and the router in `/job-search`) a precise reading of what's set up and what's missing, so they can run one concrete command to fix whatever's broken. Do not try to fix things here — diagnose only. The fix-it table at the bottom of this skill tells them which command to run.
+
+## Python binary resolution
+
+See CLAUDE.md §11. When probing for python packages, read `<user_dir>/.python-bin` first; fall back to `python3` → `python` → `py -3`.
 
 ## Working directory
 
@@ -35,8 +49,8 @@ Test-import each, report version if present:
 - `pandas`
 - `pyyaml`
 
-Check MCP servers:
-- Playwright MCP: `claude mcp list | grep playwright` — present?
+Check MCP servers (the `grep` invocation below works on macOS/Linux; on Windows, run `claude mcp list` and scan the output for "playwright"):
+- Playwright MCP: `claude mcp list` → look for `playwright`
 - Claude-in-Chrome MCP: is `mcp__Claude_in_Chrome__navigate` tool available?
 
 ### 3. User files
@@ -44,7 +58,7 @@ Check MCP servers:
 For each, report present/missing and last-modified:
 - `profile.yaml` → valid YAML? all required fields filled? (required: target_titles, seniority_level, target_locations)
 - `cv/` → any file? which?
-- `target-companies.md` → exists? how many Tier 1/2/3 companies?
+- target-companies file → exists? Look for any of `Target Companies.pdf`, `target-companies.pdf`, `target-companies.md`, `target-companies.txt`, `target-companies.docx` (case-insensitive). How many Tier 1/2/3 companies?
 - `sources.yaml` → exists? which sources enabled?
 - `tracker.xlsx` → exists? row count in Jobs, row count in Archive
 - `cover-letters.docx` → exists?
@@ -125,7 +139,8 @@ For each problem, include the exact command to fix it:
 | No target companies | paste deep-research prompt into Claude.ai, save result as target-companies.md |
 | Chrome MCP missing | install the Claude-in-Chrome extension |
 | Playwright MCP missing | `claude mcp add playwright -- npx @playwright/mcp@latest` |
-| Python dep missing | `bash <plugin_dir>/scripts/install_deps.sh` |
+| Python dep missing (macOS / Linux) | `bash <plugin_dir>/scripts/install_deps.sh` |
+| Python dep missing (Windows) | `powershell -ExecutionPolicy Bypass -File <plugin_dir>\scripts\install_deps.ps1` |
 | Tracker corrupted | `python3 <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx` (will overwrite — warn first) |
 | Last run > 3 days ago | `/job-search-daily` to catch up |
 

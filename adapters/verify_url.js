@@ -14,18 +14,21 @@
 //
 // Forked from Pradeep's personal job-search automation.
 
-// playwright-core is installed locally in adapters/node_modules/ via
-// scripts/install_deps.sh (which runs `npm install` in this directory).
-// This keeps resolution reliable across macOS/Linux/Windows and across
+// playwright-core is installed locally in adapters/node_modules/ via the
+// install scripts (install_deps.sh on macOS/Linux; install_deps.ps1 on
+// Windows). This keeps resolution reliable across platforms and across
 // Homebrew / nvm / system Node installs.
 
 let chromium;
 try {
   ({ chromium } = require('playwright-core'));
 } catch (err) {
+  const hint = process.platform === 'win32'
+    ? 'Run: powershell -ExecutionPolicy Bypass -File scripts\\install_deps.ps1'
+    : 'Run: bash scripts/install_deps.sh';
   process.stdout.write(JSON.stringify({
     status: 'unverified',
-    reason: `playwright_not_found: ${err.message}. Run: bash scripts/install_deps.sh`,
+    reason: `playwright_not_found: ${err.message}. ${hint}`,
     evidence: {},
   }) + '\n');
   process.exit(2);
@@ -143,7 +146,21 @@ async function verify(opts) {
 
   let browser;
   try {
-    browser = await chromium.launch({ headless: true });
+    try {
+      browser = await chromium.launch({ headless: true });
+    } catch (launchErr) {
+      // Playwright-core is present but the Chromium binary wasn't installed
+      // (npx playwright install chromium didn't run or failed). Give a clear
+      // actionable hint so Claude Code can surface the right fix.
+      const launchHint = process.platform === 'win32'
+        ? "Run: npx playwright install chromium (from the plugin's adapters folder), or re-run install_deps.ps1"
+        : "Run: npx playwright install chromium (from the plugin's adapters folder), or re-run install_deps.sh";
+      const msg = String(launchErr && launchErr.message || launchErr);
+      if (/Executable doesn'?t exist|browsers\s+not\s+installed|BROWSERS_PATH/i.test(msg)) {
+        return { status: 'unverified', reason: `chromium_not_installed: ${msg}. ${launchHint}`, evidence };
+      }
+      throw launchErr;
+    }
     const ctx = await browser.newContext({
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
