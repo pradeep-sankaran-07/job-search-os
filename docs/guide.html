@@ -15,6 +15,10 @@
     --soft: #6e6e73;
     --line: #d2d2d7;
     --quiet: #f5f5f7;
+    --dark: #0a0a0a;
+    --dark-soft: #2a2a2e;
+    --on-dark: #f5f5f7;
+    --on-dark-soft: #a1a1a6;
   }
 
   html, body {
@@ -82,8 +86,21 @@
   .two {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 12mm;
+    column-gap: 6mm;
   }
+  .two .col {
+    padding: 4.5mm 5mm;
+    border-radius: 3mm;
+  }
+  .two .col.light {
+    background: var(--quiet);
+  }
+  .two .col.dark {
+    background: var(--dark);
+    color: var(--on-dark);
+  }
+  .two .col.dark .label { color: var(--on-dark-soft); }
+  .two .col.dark h3, .two .col.dark p { color: var(--on-dark); }
   .two .col h3 {
     font-size: 12pt;
     letter-spacing: -0.2px;
@@ -97,50 +114,124 @@
   }
 
   /* Install / use */
-  .install ol {
-    margin: 0;
-    padding-left: 5mm;
-    font-size: 10.5pt;
+  .install .row {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    margin-bottom: 3mm;
   }
-  .install ol li {
-    margin-bottom: 1.8mm;
-    padding-left: 1mm;
-  }
-  .install ol li:last-child { margin-bottom: 0; }
-  .install a {
-    color: var(--ink);
-    text-decoration: underline;
-    text-decoration-color: var(--line);
-  }
-  .install .ask {
-    display: block;
-    margin-top: 1.2mm;
-    padding: 1.5mm 3mm;
+  .install .row:last-child { margin-bottom: 0; }
+  .install .row .n {
+    width: 6mm;
+    height: 6mm;
+    border-radius: 50%;
     background: var(--quiet);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10pt;
+    font-weight: 600;
+    flex: 0 0 auto;
+  }
+  .install .row .txt {
+    flex: 1;
+    font-size: 10.5pt;
+    color: var(--ink);
+  }
+  .btn-dark {
+    display: inline-block;
+    background: var(--dark);
+    color: var(--on-dark);
+    padding: 1.8mm 5mm;
     border-radius: 2mm;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 10pt;
+    letter-spacing: -0.1px;
+    margin-left: 2mm;
+  }
+  .install .ask-dark {
+    display: block;
+    margin-top: 2mm;
+    padding: 3mm 4mm;
+    background: var(--dark);
+    color: var(--on-dark);
+    border-radius: 2.5mm;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
     font-style: italic;
     font-size: 10pt;
-    color: var(--ink);
-  }
-  .install .req {
-    color: var(--soft);
-    font-size: 9pt;
-    margin-top: 3mm;
+    line-height: 1.45;
   }
 
-  /* What actually happens */
-  .happens ul {
+  /* What actually happens — page 2 */
+  .page-2 {
+    width: 210mm;
+    height: 297mm;
+    padding: 14mm 20mm 10mm 20mm;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    page-break-before: always;
+    break-before: page;
+  }
+  .happens-band {
+    background: var(--dark);
+    color: var(--on-dark);
+    padding: 8mm 8mm;
+    border-radius: 3mm;
+    margin-bottom: 8mm;
+  }
+  .happens-band .label {
+    color: var(--on-dark-soft);
+    margin-bottom: 2mm;
+  }
+  .happens-band h2 {
     margin: 0;
-    padding-left: 5mm;
-    font-size: 10pt;
+    font-size: 20pt;
+    letter-spacing: -0.4px;
+    font-weight: 700;
+  }
+  .happens-band p {
+    margin: 3mm 0 0 0;
+    font-size: 10.5pt;
+    color: var(--on-dark-soft);
+    max-width: 150mm;
+  }
+  .happens-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4mm;
+    font-size: 10.5pt;
+  }
+  .happens-list .item {
+    display: grid;
+    grid-template-columns: 42mm 1fr;
+    column-gap: 5mm;
+    align-items: start;
+  }
+  .happens-list .item .k {
+    font-weight: 600;
     color: var(--ink);
+    font-size: 10.5pt;
   }
-  .happens ul li {
-    margin-bottom: 1.3mm;
-    padding-left: 0.5mm;
+  .happens-list .item .v {
+    color: var(--ink);
+    font-size: 10.5pt;
   }
-  .happens ul li:last-child { margin-bottom: 0; }
-  .happens ul li strong { font-weight: 600; }
+  .happens-list .item .v em {
+    font-style: italic;
+    color: var(--soft);
+  }
+  .happens-list .item.featured .k {
+    background: var(--dark);
+    color: var(--on-dark);
+    padding: 1mm 3mm;
+    border-radius: 2mm;
+    display: inline-block;
+    justify-self: start;
+    font-size: 9.5pt;
+  }
 
   /* Sub-steps inside a step's body */
   .sub ol {
@@ -222,12 +313,12 @@
 
   <!-- PROBLEM / DOES -->
   <section class="two">
-    <div class="col">
+    <div class="col light">
       <div class="label">The problem</div>
       <h3>The grunt work crowds out the thinking.</h3>
       <p>Time pressure makes you cut corners. Generic cover letters. Roles you miss. Applications to jobs already filled. The thinking that actually lands interviews gets squeezed out.</p>
     </div>
-    <div class="col">
+    <div class="col dark">
       <div class="label">What it does</div>
       <h3>Claude as your on-standby agent.</h3>
       <p>Runs the search, writes the letters, tracks the roles. Because it knows everything about you, just ask &mdash; a tailored CV, a custom pitch, a LinkedIn intro, whatever you need.</p>
@@ -239,30 +330,20 @@
   <!-- INSTALL -->
   <section class="install">
     <div class="label">Install</div>
-    <ol>
-      <li>Install <strong>Claude Code</strong> &mdash; <a href="https://docs.claude.com/en/docs/claude-code">docs.claude.com/en/docs/claude-code</a></li>
-      <li>Make sure you&rsquo;re on <strong>Claude Pro or Max</strong> (required to use Claude Code)</li>
-      <li>Open Claude Code and paste this message:
-        <span class="ask">&ldquo;Can you please install the plugin from github.com/pradeep-sankaran-07/job-search-os and walk me through the setup?&rdquo;</span>
-      </li>
-    </ol>
-    <div class="req">Needs Claude (Pro or Max) and Chrome browser installed. Works on macOS, Linux, and Windows &mdash; the setup auto-detects your OS.</div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- WHAT ACTUALLY HAPPENS -->
-  <section class="happens">
-    <div class="label">What actually happens</div>
-    <ul>
-      <li>Creates a local <strong>folder</strong> on your machine for all your job-search files.</li>
-      <li>Every morning it <strong>searches</strong> Finn, LinkedIn, Indeed, Glassdoor, Google, and your target companies&rsquo; career pages.</li>
-      <li>Fills an <strong>Excel tracker</strong>: each role gets a short summary, a fit rating (Strong / Medium), and a direct link.</li>
-      <li>Drafts a <strong>personalized cover letter</strong> for every Strong match &mdash; in your voice.</li>
-      <li>You open the Excel and update the <strong>Status</strong> column: <em>Apply</em>, <em>Will not apply</em>, or <em>Not a real job</em>. Claude learns from your choices.</li>
-      <li><strong>On demand</strong>: ask Claude for a tailored CV, a tweak to a letter, a LinkedIn outreach &mdash; it knows you.</li>
-      <li><strong>Found a job yourself?</strong> Drop the screenshot into Claude. It adds it to the tracker, writes a letter, rates the fit.</li>
-    </ul>
+    <div class="row">
+      <div class="n">1</div>
+      <div class="txt">
+        Download the Claude desktop app
+        <a class="btn-dark" href="https://claude.ai/download">claude.ai/download</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="n">2</div>
+      <div class="txt">
+        Paste this message into Claude:
+        <span class="ask-dark">&ldquo;Can you please install the plugin from github.com/pradeep-sankaran-07/job-search-os and walk me through the setup?&rdquo;</span>
+      </div>
+    </div>
   </section>
 
   <hr class="rule">
@@ -285,13 +366,13 @@
         <div class="num">2</div>
         <div>
           <h4>Pick target companies</h4>
-          <p>Claude Code sends you to <strong>Claude chat</strong> (claude.ai) for this &mdash; it has a stronger <em>Research</em> mode.</p>
-          <div class="prompt">&ldquo;Let&rsquo;s figure out my target companies.&rdquo;</div>
+          <p>For this one step, switch to <strong>Chat mode</strong> in the Claude desktop app &mdash; Chat has a stronger <em>Research</em> mode for multi-source web research.</p>
           <div class="sub">
             <ol>
-              <li>In <strong>Claude chat</strong>, turn on <strong>Research</strong> mode.</li>
-              <li>Paste the prompt Claude Code gives you (your profile is already included).</li>
-              <li>Save the list as <strong>target-companies.md</strong> in your folder and come back.</li>
+              <li>Switch to <strong>Chat mode</strong> in the Claude desktop app.</li>
+              <li>Turn on <strong>Research</strong> mode (toggle near the chat input).</li>
+              <li>Paste the prompt Claude Code gave you (your profile is already included).</li>
+              <li>Save the list as <strong>target-companies</strong> in your folder, then switch back to Code mode.</li>
             </ol>
           </div>
         </div>
@@ -300,21 +381,73 @@
       <div class="step">
         <div class="num">3</div>
         <div>
-          <h4>Your daily run</h4>
-          <p>Every morning Claude updates your Excel tracker in your folder. Strong-fit cover letters are pre-drafted. You open the Excel and update the Status column &mdash; Apply, Will not apply, or Not a real job.</p>
-          <div class="prompt">&ldquo;What&rsquo;s new today?&rdquo;</div>
+          <h4>Every day: open, pick, apply</h4>
+          <p>Each morning your Excel tracker is updated automatically &mdash; strong matches are scored and cover letters are drafted. Open the tracker, pick what you want to apply to, and update the Status column. Need a tweak, a custom CV, or a LinkedIn intro? Just ask Claude &mdash; it knows you.</p>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <div class="footer">
+  <!-- (page 1 ends; footer lives on page 2) -->
+
+</div>
+
+<!-- ============================ PAGE 2 ============================ -->
+<div class="page-2">
+
+  <div class="happens-band">
+    <div class="label">What actually happens</div>
+    <h2>Under the hood.</h2>
+    <p>Once set up, Claude runs in the background every morning. Here&rsquo;s what the plugin does on your behalf &mdash; so you know exactly what to expect and where to intervene.</p>
+  </div>
+
+  <div class="happens-list">
+
+    <div class="item">
+      <div class="k">Your local folder</div>
+      <div class="v">When you install the plugin, it creates a folder on your machine for everything: your CV, profile, target-company list, tracker, cover letters, and logs. Nothing leaves your computer.</div>
+    </div>
+
+    <div class="item">
+      <div class="k">Daily search &mdash; scheduled</div>
+      <div class="v">Every morning, Claude automatically searches <strong>LinkedIn</strong>, <strong>Indeed</strong>, <strong>Google</strong>, and the career pages of your <strong>target companies</strong>. It dedupes and verifies every match in a real browser so dead links never reach you.</div>
+    </div>
+
+    <div class="item">
+      <div class="k">Excel tracker, auto-filled</div>
+      <div class="v">Each role shows up with a short summary, fit rating (<strong>Strong</strong> or <strong>Medium</strong>), direct link, and a Status column you control.</div>
+    </div>
+
+    <div class="item">
+      <div class="k">Cover letters, pre-drafted</div>
+      <div class="v">For every Strong match, a personalized first-draft cover letter is written in your voice, ready in your folder. Tweak or ask Claude to rewrite &mdash; whichever is faster.</div>
+    </div>
+
+    <div class="item">
+      <div class="k">Your daily move</div>
+      <div class="v">Open the Excel. Pick what to apply to. Mark the Status: <em>Apply</em>, <em>Will not apply</em>, or <em>Not a real job</em> (for false positives). Claude learns from every choice.</div>
+    </div>
+
+    <div class="item">
+      <div class="k">On demand</div>
+      <div class="v">Ask Claude for a tailored CV for one role, a re-pitched cover letter, a LinkedIn intro, or anything else. It knows your CV, your profile, and your targets &mdash; it doesn&rsquo;t need context.</div>
+    </div>
+
+    <div class="item featured">
+      <div class="k">Found one elsewhere?</div>
+      <div class="v">Spotted a job opportunity somewhere outside the tracker &mdash; a tip from a friend, a LinkedIn post, an email? Drop the screenshot or link into Claude and ask it to process. It adds the role to the tracker, drafts a cover letter, and rates the fit &mdash; same flow as everything else.</div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER (page 2) -->
+  <div class="footer" style="margin-top: auto;">
     <div>Built by Pradeep Sankaran</div>
     <div>Questions? <a href="https://www.linkedin.com/in/pradeep-sankaran">linkedin.com/in/pradeep-sankaran</a></div>
   </div>
 
 </div>
+
 </body>
 </html>
