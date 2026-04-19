@@ -1,6 +1,8 @@
 """Target-company careers-page scraping helpers.
 
-For each Tier 1 company in target-companies.md, the daily-search skill
+For each Tier 1 company in the target-companies file (accepted filenames
+include Target Companies.pdf, target-companies.md, target-companies.pdf,
+target-companies.txt, target-companies.docx), the daily-search skill
 navigates to the careers URL via Playwright MCP and looks for open roles
 matching the user's target titles.
 

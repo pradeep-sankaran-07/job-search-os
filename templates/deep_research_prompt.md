@@ -10,7 +10,7 @@ The onboarding wizard fills in this template with values from your `profile.yaml
 4. Paste the prompt below.
 5. Wait a few minutes for Claude to research.
 6. Copy the final list from Claude's response.
-7. Save it as `target-companies.md` in your job-search folder.
+7. Save Claude Chat's response as `Target Companies.pdf` in your job-search folder (browser Print → Save as PDF works).
 8. Go back to Claude Code and type `/job-search` — it picks up from there.
 
 ---

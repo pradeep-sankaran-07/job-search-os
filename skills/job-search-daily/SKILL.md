@@ -134,7 +134,7 @@ Log per-source counts (raw hits, survived hard filters, new vs. existing) for th
 For every remaining candidate, run `adapters/verify_url.py` in parallel (asyncio or multiprocessing, up to 8 concurrent):
 
 ```
-<python> adapters/verify_url.py <url> --title <title> --company <company> \
+<python> <plugin_dir>/adapters/verify_url.py <url> --title <title> --company <company> \
     --learnings-file <user_dir>/logs/false_positive_learnings.json
 ```
 
@@ -256,6 +256,6 @@ Write the full summary to `<user_dir>/logs/run-<YYYY-MM-DD>.log` as well.
 - `profile.yaml` missing or empty → stop; suggest `/job-search-setup`.
 - target-companies file missing (no `Target Companies.pdf` / `target-companies.*` in user_dir) → stop; suggest running `/job-search` which routes through onboarding.
 - No sources enabled → stop; suggest editing `sources.yaml` or re-running setup.
-- Python dependencies missing → run `scripts/install_deps.sh` once (no need to ask), retry.
+- Python dependencies missing → run the appropriate installer once (no need to ask), retry: `bash <plugin_dir>/scripts/install_deps.sh` on macOS/Linux, or `powershell -ExecutionPolicy Bypass -File <plugin_dir>\scripts\install_deps.ps1` on Windows. Detect OS first per CLAUDE.md §11.
 
 Never ask the user "should I continue?" mid-run. Either complete, or stop with a clear message and a concrete next command.

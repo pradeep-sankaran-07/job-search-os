@@ -141,7 +141,7 @@ For each problem, include the exact command to fix it:
 | Playwright MCP missing | `claude mcp add playwright -- npx @playwright/mcp@latest` |
 | Python dep missing (macOS / Linux) | `bash <plugin_dir>/scripts/install_deps.sh` |
 | Python dep missing (Windows) | `powershell -ExecutionPolicy Bypass -File <plugin_dir>\scripts\install_deps.ps1` |
-| Tracker corrupted | `python3 <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx` (will overwrite — warn first) |
+| Tracker corrupted | `<python> <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx` (will overwrite — warn first). `<python>` = contents of `<user_dir>/.python-bin` or `python3` / `python` / `py -3`. |
 | Last run > 3 days ago | `/job-search-daily` to catch up |
 
 ## Don't

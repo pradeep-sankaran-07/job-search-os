@@ -177,8 +177,10 @@ Also re-save `<user_dir>/sources.yaml` now, filling in `sources.indeed.country_c
 
 Run:
 ```bash
-python3 <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx
+<python> <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx
 ```
+
+(`<python>` is the Python binary you resolved in Step 3 — read from `<user_dir>/.python-bin` or probed via `python3` → `python` → `py -3`. See CLAUDE.md §11.)
 
 Also create a minimally-valid empty `<user_dir>/cover-letters.docx` — a zero-byte file is NOT a valid docx and `python-docx` will raise `PackageNotFoundError` when the daily skill tries to append. Create it via python-docx:
 
@@ -246,7 +248,14 @@ If yes, try scheduling in this order:
    0 8 * * 1-5  claude -p "/job-search-daily"
    ```
 
-   **Windows** — print a `schtasks` command the user runs from an elevated terminal once. Note the nested quoting so the inner slash-command survives `schtasks` parsing:
+   **Windows** — print a `schtasks` command the user runs once. The quoting differs between cmd.exe and PowerShell. Pick the right one for the shell the user is in (HOW_TO_USE tells Windows users to use PowerShell / Windows Terminal):
+   
+   PowerShell form (recommended — wrap `/TR` value in single quotes so `\"` passes through to schtasks literally):
+   ```
+   schtasks /Create /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 08:00 /TN "Claude Job Search Daily" /TR 'cmd /c claude -p \"/job-search-daily\"'
+   ```
+   
+   cmd.exe form (if the user is in classic `cmd`):
    ```
    schtasks /Create /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 08:00 /TN "Claude Job Search Daily" /TR "cmd /c claude -p \"/job-search-daily\""
    ```

@@ -47,7 +47,7 @@ If you skip this step, LinkedIn will be disabled and the plugin will still work 
 
 ### Step 3 — Install the plugin
 
-Open Claude Desktop. Open Claude Code (press `⌘+J` on Mac or `Ctrl+J` on Windows). In the input, type:
+In the Claude Code terminal you started in Step 1 (or in Claude Desktop's embedded Code mode — press `⌘+J` on Mac or `Ctrl+J` on Windows to open it), type:
 
 ```
 /plugin marketplace add pradeep-sankaran-07/job-search-os
