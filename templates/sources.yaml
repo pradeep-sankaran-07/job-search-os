@@ -19,7 +19,10 @@ sources:
   indeed:
     enabled: true
     method: jobspy               # best-effort; python-jobspy gets blocked sometimes
-    country_code: norway         # set by setup wizard based on your location
+    country_code: ""             # REQUIRED — onboarding fills this from your target_locations.
+                                 # Valid values (lowercase): "norway", "sweden", "denmark", "finland",
+                                 # "germany", "france", "netherlands", "uk", "usa", "worldwide", etc.
+                                 # See python-jobspy docs for the full list.
     priority: 3
 
   glassdoor:

@@ -57,9 +57,9 @@ These are the only two prefixes allowed. If a row's `Key Notes` starts with neit
 
 All user data lives in the folder recorded in `~/.claude/settings.json` under `jobSearchOs.userDataPath` (default: `~/Documents/job-search/`). Resolve paths against that directory. Never write outside it.
 
-## 9. Pradeep/personal-data guard
+## 9. Personal-data guard
 
-This plugin is public and distributed. It must never reference Pradeep, Gelato, Schlumberger, his contact details, his target companies, or his voice examples. If you're forking content from Pradeep's personal skills, strip all that out first.
+This plugin is public. Skill outputs (cover letters, tracker entries, summaries) must only contain the installing user's own data — their name, their CV, their profile, their target companies. Never leak the plugin author's personal details or anyone else's data into a user's outputs.
 
 ## 10. If the user is stuck, show `/job-search-status`
 

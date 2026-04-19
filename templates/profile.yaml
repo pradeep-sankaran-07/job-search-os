@@ -1,0 +1,67 @@
+# Your job-search profile.
+# The onboarding wizard (/job-search-setup) fills this in for you.
+# You can edit it manually any time — just keep it valid YAML.
+
+# --- Who you are (for cover letters) ---
+name: ""
+location: ""          # e.g. "Oslo, Norway"
+email: ""
+phone: ""             # optional
+linkedin: ""          # optional
+
+# --- What you're looking for ---
+target_titles:
+  # Add as many variations as useful, including local-language ones.
+  # Example:
+  # - "Head of Product"
+  # - "VP Product"
+  # - "Director of Product"
+  # - "produktdirektør"
+  - ""
+
+seniority_level: ""   # one of: "ic", "manager", "director", "vp", "cxo"
+
+target_locations:
+  # List each place or work-style you'll accept.
+  # Examples: "Oslo, Norway", "Remote, Europe", "Hybrid, Stockholm"
+  - ""
+
+target_domains:
+  # High-level industries you're interested in.
+  # Examples: "B2B SaaS", "AI", "Marketplace", "Fintech", "Industrial Tech"
+  - ""
+
+company_stage:
+  # Pick one or more: "seed", "series-a", "series-b", "series-c-d", "public", "any"
+  - "any"
+
+# --- What you want to AVOID ---
+hard_filters:
+  # Words that, if they appear in the title or description, auto-reject the job.
+  # Edit freely. Examples commonly used:
+  # - "crypto"
+  # - "blockchain"
+  # - "hardware engineer"
+  # - "pre-sales"
+  # - "presales"
+  # - "implementation consultant"
+  # - "staffing"
+  # - "recruiter"
+  # - "contract"
+  - ""
+
+min_seniority:
+  # Reject roles clearly below this level. Example: "director" will reject
+  # "Senior Product Manager", "Product Owner", "Associate PM".
+  # Valid values match seniority_level above.
+  value: ""
+  reject_titles_below: true
+
+# --- Cover-letter voice ---
+voice_snippet: |
+  # Paste 1-2 sentences of your own writing here. Claude uses it as a style
+  # anchor when drafting cover letters. You can leave this blank at first
+  # and fill it in later.
+
+# --- Metadata ---
+version: "0.1.0"

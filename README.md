@@ -49,10 +49,11 @@ The rest is guided. No GitHub account needed. Full walkthrough: [HOW_TO_USE.md](
 ## Repo layout
 
 ```
+CLAUDE.md                      quiet-operation rules loaded into every session
 .claude-plugin/
-  plugin.json                  manifest
-  CLAUDE.md                    quiet-operation rules (no unnecessary prompts)
-  settings.template.json       pre-approved permissions
+  plugin.json                  plugin manifest
+  marketplace.json             marketplace manifest (makes the one-line install work)
+  settings.template.json       pre-approved permissions, merged at setup
 commands/                      slash commands
 skills/
   job-search-onboarding/       CV → profile → targets → schedule wizard

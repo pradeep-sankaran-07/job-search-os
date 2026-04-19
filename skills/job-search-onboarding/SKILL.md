@@ -50,7 +50,7 @@ Then:
   └── (files populated later)
   ```
 - If yes to permissions merge: read `<plugin_dir>/.claude-plugin/settings.template.json` and merge its `permissions.allow` list into `~/.claude/settings.json`. Keep the user's existing entries. Add `jobSearchOs.userDataPath` pointing to their folder.
-- Write `sources.yaml` from `<plugin_dir>/templates/sources.yaml`.
+- Write `sources.yaml` from `<plugin_dir>/templates/sources.yaml`. **After writing, set `sources.indeed.country_code`** based on the user's primary target location (derived in Step 6 after profile Q&A — either re-save here after Q&A, or defer this write until Step 6.1). Valid jobspy country codes: `norway`, `sweden`, `denmark`, `finland`, `germany`, `france`, `netherlands`, `uk`, `usa`, `worldwide` (lowercase). If the user's primary location doesn't map to a jobspy country (e.g. "Remote, Europe"), use `"worldwide"`.
 
 ## Step 3: Install dependencies silently
 

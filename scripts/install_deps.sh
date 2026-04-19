@@ -34,15 +34,22 @@ fi
 echo "• Python: $PYTHON ($("$PYTHON" --version))"
 
 # --- Python packages ---
-echo "• Installing Python packages (one combined pip call)..."
-"$PYTHON" -m pip install --upgrade --quiet \
-  python-jobspy \
-  openpyxl \
-  python-docx \
-  pandas \
-  pyyaml \
-  && echo "  ✅ python packages installed" \
-  || echo "  ⚠️  pip install had errors — continuing anyway"
+# Handle PEP 668 "externally-managed-environment" on modern Homebrew/Debian Python:
+# try plain install first, fall back to --user, then to --break-system-packages.
+echo "• Installing Python packages..."
+PIP_PKGS=(python-jobspy openpyxl python-docx pandas pyyaml)
+
+if "$PYTHON" -m pip install --upgrade --quiet "${PIP_PKGS[@]}" 2>/tmp/jsos_pip.err; then
+  echo "  ✅ python packages installed"
+elif "$PYTHON" -m pip install --upgrade --quiet --user "${PIP_PKGS[@]}" 2>/tmp/jsos_pip.err; then
+  echo "  ✅ python packages installed (--user)"
+elif "$PYTHON" -m pip install --upgrade --quiet --break-system-packages "${PIP_PKGS[@]}" 2>/tmp/jsos_pip.err; then
+  echo "  ✅ python packages installed (--break-system-packages)"
+else
+  echo "  ⚠️  pip install failed:"
+  cat /tmp/jsos_pip.err
+  echo "  → Consider creating a venv: python3 -m venv ~/.venvs/job-search-os && source ~/.venvs/job-search-os/bin/activate, then re-run this script."
+fi
 
 # --- Node + Playwright MCP ---
 if ! command -v node >/dev/null 2>&1; then

@@ -27,10 +27,14 @@ npm-debug.log*
 .coverage
 htmlcov/
 
-# User data (if someone accidentally clones into their job-search folder)
+# User data (if someone accidentally clones into their job-search folder).
+# The exclusions below whitelist the template/ shipping copies that we DO
+# want in version control.
 tracker.xlsx
 cover-letters.docx
 target-companies.md
-profile.yaml
+/profile.yaml
 cv/
 logs/
+!templates/profile.yaml
+!templates/sources.yaml

@@ -21,7 +21,7 @@ Run all of these; include each in the report.
 
 ### 1. Installation
 
-- Plugin installed? (check `/plugin list` output or existence of `<plugin_dir>/.claude-plugin/plugin.json`)
+- Plugin installed? (check existence of `<plugin_dir>/.claude-plugin/plugin.json`)
 - User-data path set in settings? (`jobSearchOs.userDataPath`)
 - User-data folder exists?
 - Permissions merged? (look for any `mcp__playwright__*` entry in user's settings.json → proxy for "merge happened")
