@@ -19,6 +19,8 @@
     --dark-soft: #2a2a2e;
     --on-dark: #f5f5f7;
     --on-dark-soft: #a1a1a6;
+    --accent: #0071e3;          /* Apple blue */
+    --accent-soft: #e8f1fc;     /* very light blue tint */
   }
 
   html, body {
@@ -36,11 +38,13 @@
 
   .page {
     width: 210mm;
-    height: 297mm;
-    padding: 14mm 20mm 10mm 20mm;
+    padding: 14mm 20mm 14mm 20mm;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+  }
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+    height: 0;
   }
 
   /* Header */
@@ -118,15 +122,15 @@
     display: flex;
     align-items: center;
     gap: 4mm;
-    margin-bottom: 3mm;
+    margin-bottom: 2.2mm;
   }
   .install .row:last-child { margin-bottom: 0; }
   .install .row .n {
     width: 6mm;
     height: 6mm;
     border-radius: 50%;
-    background: var(--quiet);
-    color: var(--ink);
+    background: var(--accent);
+    color: #ffffff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -151,6 +155,50 @@
     letter-spacing: -0.1px;
     margin-left: 2mm;
   }
+  .btn-accent {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    padding: 1.8mm 5mm;
+    border-radius: 10mm;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 10pt;
+    letter-spacing: -0.1px;
+    margin-left: 2mm;
+  }
+  .install .folder-note {
+    margin-top: 2.5mm;
+    padding: 3mm 4mm;
+    background: var(--accent-soft);
+    border-left: 2pt solid var(--accent);
+    border-radius: 0 2mm 2mm 0;
+    font-size: 9.5pt;
+    color: var(--ink);
+  }
+  .install .folder-note strong { color: var(--ink); font-weight: 600; }
+  .install .folder-note code {
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 9pt;
+    background: #ffffff;
+    padding: 0.3mm 1.2mm;
+    border-radius: 1mm;
+    border: 1px solid var(--line);
+  }
+  .mode-pill {
+    display: inline-block;
+    font-size: 7.5pt;
+    letter-spacing: 0.3px;
+    padding: 0.4mm 2mm;
+    border: 1px solid var(--line);
+    border-radius: 10mm;
+    color: var(--soft);
+    font-weight: 500;
+    margin-left: 2.5mm;
+    vertical-align: 2px;
+    text-transform: none;
+  }
+  .mode-pill.code { color: var(--accent); border-color: var(--accent); }
   .install .ask-dark {
     display: block;
     margin-top: 2mm;
@@ -165,59 +213,54 @@
   }
 
   /* What actually happens — page 2 */
-  .page-2 {
-    width: 210mm;
-    height: 297mm;
-    padding: 14mm 20mm 10mm 20mm;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    page-break-before: always;
-    break-before: page;
-  }
   .happens-band {
     background: var(--dark);
     color: var(--on-dark);
-    padding: 8mm 8mm;
+    padding: 5mm 6mm;
     border-radius: 3mm;
-    margin-bottom: 8mm;
+    margin-bottom: 4mm;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .happens-band .label {
     color: var(--on-dark-soft);
-    margin-bottom: 2mm;
+    margin-bottom: 1.5mm;
   }
   .happens-band h2 {
     margin: 0;
-    font-size: 20pt;
+    font-size: 17pt;
     letter-spacing: -0.4px;
     font-weight: 700;
   }
   .happens-band p {
-    margin: 3mm 0 0 0;
-    font-size: 10.5pt;
+    margin: 2mm 0 0 0;
+    font-size: 9.5pt;
     color: var(--on-dark-soft);
     max-width: 150mm;
   }
   .happens-list {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 4mm;
-    font-size: 10.5pt;
+    gap: 2.2mm;
+    font-size: 9.8pt;
   }
   .happens-list .item {
     display: grid;
-    grid-template-columns: 42mm 1fr;
+    grid-template-columns: 40mm 1fr;
     column-gap: 5mm;
     align-items: start;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .happens-list .item .k {
     font-weight: 600;
     color: var(--ink);
-    font-size: 10.5pt;
+    font-size: 9.8pt;
   }
   .happens-list .item .v {
     color: var(--ink);
-    font-size: 10.5pt;
+    font-size: 9.8pt;
+    line-height: 1.38;
   }
   .happens-list .item .v em {
     font-style: italic;
@@ -254,6 +297,8 @@
     grid-template-columns: 8mm 1fr;
     column-gap: 4mm;
     align-items: start;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .step .num {
     font-size: 12pt;
@@ -285,13 +330,15 @@
 
   /* Footer */
   .footer {
-    margin-top: auto;
-    padding-top: 4mm;
+    margin-top: 6mm;
+    padding-top: 3mm;
     border-top: 1px solid var(--line);
     font-size: 9pt;
     color: var(--soft);
     display: flex;
     justify-content: space-between;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .footer a { color: var(--ink); text-decoration: none; }
 </style>
@@ -334,15 +381,24 @@
       <div class="n">1</div>
       <div class="txt">
         Download the Claude desktop app
-        <a class="btn-dark" href="https://claude.ai/download">claude.ai/download</a>
+        <a class="btn-accent" href="https://claude.ai/download">claude.ai/download</a>
       </div>
     </div>
     <div class="row">
       <div class="n">2</div>
       <div class="txt">
-        Paste this message into Claude:
+        Sign up for a <strong>Claude Pro</strong> plan if you don&rsquo;t already have one &mdash; Claude Code needs it.
+      </div>
+    </div>
+    <div class="row">
+      <div class="n">3</div>
+      <div class="txt">
+        Switch to <strong>Code</strong> mode in the Claude desktop app, and paste this message:
         <span class="ask-dark">&ldquo;Can you please install the plugin from github.com/pradeep-sankaran-07/job-search-os and walk me through the setup?&rdquo;</span>
       </div>
+    </div>
+    <div class="folder-note">
+      This creates a <strong>job-search</strong> folder in your <code>Documents</code> &mdash; Claude will drop your CV, profile, tracker, and cover letters inside it. You also need <strong>Chrome</strong> installed (that&rsquo;s what Claude uses to search LinkedIn).
     </div>
   </section>
 
@@ -356,8 +412,8 @@
       <div class="step">
         <div class="num">1</div>
         <div>
-          <h4>Drop your CV + build your profile</h4>
-          <p>Claude reads your CV, asks short questions about what you&rsquo;re looking for (titles, locations, seniority, dealbreakers), and gives you a polished CV back along with a saved profile.</p>
+          <h4>Drop your CV + build your profile<span class="mode-pill code">in Code</span></h4>
+          <p>In Claude Code, share your CV. Claude reads it, asks a short set of questions about what you&rsquo;re looking for (titles, locations, seniority, dealbreakers), and gives you a polished CV back along with a saved profile.</p>
           <div class="prompt">&ldquo;Here&rsquo;s my CV &mdash; let&rsquo;s set up my job search. Polish it if needed, then ask me what you need to know.&rdquo;</div>
         </div>
       </div>
@@ -365,14 +421,16 @@
       <div class="step">
         <div class="num">2</div>
         <div>
-          <h4>Pick target companies</h4>
-          <p>For this one step, switch to <strong>Chat mode</strong> in the Claude desktop app &mdash; Chat has a stronger <em>Research</em> mode for multi-source web research.</p>
+          <h4>Pick target companies<span class="mode-pill">in Chat</span></h4>
+          <p>Whenever you&rsquo;re ready &mdash; doesn&rsquo;t have to be right after setup &mdash; ask Claude Code for a target-companies prompt. It fills in your profile and hands you a prompt to run in Claude <strong>Chat</strong>, which has a stronger <em>Research</em> mode.</p>
+          <div class="prompt">&ldquo;Please give me the prompt to build my target-company list.&rdquo;</div>
           <div class="sub">
             <ol>
-              <li>Switch to <strong>Chat mode</strong> in the Claude desktop app.</li>
+              <li>Switch to <strong>Chat</strong> mode in the Claude desktop app.</li>
               <li>Turn on <strong>Research</strong> mode (toggle near the chat input).</li>
-              <li>Paste the prompt Claude Code gave you (your profile is already included).</li>
-              <li>Save the list as <strong>target-companies</strong> in your folder, then switch back to Code mode.</li>
+              <li>Paste the prompt Claude Code gave you.</li>
+              <li>When Claude Chat returns the list, save it as <strong>target-companies</strong> in your <code>job-search</code> folder.</li>
+              <li>Switch back to <strong>Code</strong> mode.</li>
             </ol>
           </div>
         </div>
@@ -381,20 +439,16 @@
       <div class="step">
         <div class="num">3</div>
         <div>
-          <h4>Every day: open, pick, apply</h4>
-          <p>Each morning your Excel tracker is updated automatically &mdash; strong matches are scored and cover letters are drafted. Open the tracker, pick what you want to apply to, and update the Status column. Need a tweak, a custom CV, or a LinkedIn intro? Just ask Claude &mdash; it knows you.</p>
+          <h4>Every day: open, pick, apply<span class="mode-pill code">in Code</span></h4>
+          <p>Each morning your Excel tracker is updated automatically &mdash; strong matches are scored and cover letters are drafted. Open the tracker, pick what you want to apply to, and update the Status column. Need a tweak, a custom CV, or a LinkedIn intro? Just ask Claude Code &mdash; it knows you.</p>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- (page 1 ends; footer lives on page 2) -->
-
-</div>
-
-<!-- ============================ PAGE 2 ============================ -->
-<div class="page-2">
+  <!-- Natural break before "What actually happens" -->
+  <div style="margin-top: 5mm;"></div>
 
   <div class="happens-band">
     <div class="label">What actually happens</div>
@@ -441,8 +495,8 @@
 
   </div>
 
-  <!-- FOOTER (page 2) -->
-  <div class="footer" style="margin-top: auto;">
+  <!-- FOOTER -->
+  <div class="footer">
     <div>Built by Pradeep Sankaran</div>
     <div>Questions? <a href="https://www.linkedin.com/in/pradeep-sankaran">linkedin.com/in/pradeep-sankaran</a></div>
   </div>
