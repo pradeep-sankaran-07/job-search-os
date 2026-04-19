@@ -52,17 +52,38 @@ Then:
 - If yes to permissions merge: read `<plugin_dir>/.claude-plugin/settings.template.json` and merge its `permissions.allow` list into `~/.claude/settings.json`. Keep the user's existing entries. Add `jobSearchOs.userDataPath` pointing to their folder.
 - Write `sources.yaml` from `<plugin_dir>/templates/sources.yaml`. **After writing, set `sources.indeed.country_code`** based on the user's primary target location (derived in Step 6 after profile Q&A — either re-save here after Q&A, or defer this write until Step 6.1). Valid jobspy country codes: `norway`, `sweden`, `denmark`, `finland`, `germany`, `france`, `netherlands`, `uk`, `usa`, `worldwide` (lowercase). If the user's primary location doesn't map to a jobspy country (e.g. "Remote, Europe"), use `"worldwide"`.
 
-## Step 3: Install dependencies silently
+## Step 3: Install dependencies silently (auto-detect OS)
 
-Run in one shot:
+First, detect the user's OS — this is silent, no user question needed:
 
+```bash
+python3 -c "import platform; print(platform.system())"
+# Prints: "Darwin" (macOS), "Linux", or "Windows"
+```
+
+Or if Python isn't available yet, use shell detection:
+- `$OS` env var on Windows is `"Windows_NT"`
+- `uname -s` on macOS returns `Darwin`, Linux returns `Linux`
+
+Then run the correct installer in one shot:
+
+**macOS / Linux:**
 ```bash
 bash <plugin_dir>/scripts/install_deps.sh
 ```
 
-This installs Python deps (`python-jobspy openpyxl python-docx pandas pyyaml`) and registers the Playwright MCP server if not already present. If any step fails, surface the error but do NOT abort — the user can retry later and some pieces (manual add, profile collection) still work without all deps.
+**Windows:**
+```powershell
+powershell -ExecutionPolicy Bypass -File <plugin_dir>/scripts/install_deps.ps1
+```
 
-Do not ask the user "should I install?" — if they ran `/job-search-setup`, consent is implicit.
+Both scripts install the same things: Python deps (`python-jobspy openpyxl python-docx pandas pyyaml`), the Playwright MCP server, Chromium, and register the MCP with Claude Code. They handle PEP 668 (externally-managed Python) with `--user` and `--break-system-packages` fallbacks.
+
+If any step fails, surface the error but do NOT abort — the user can retry later and some pieces (manual add, profile collection) still work without all deps.
+
+Do not ask the user "which OS?" or "should I install?" — detect the OS silently, run the right script, move on.
+
+**Path handling**: always use `pathlib.Path.home() / "Documents" / "job-search"` or `os.path.expanduser("~/Documents/job-search")` — both work identically on macOS, Linux, and Windows. Do not hard-code `/Users/` or `C:\Users\`.
 
 ## Step 4: Detect Chrome MCP (for LinkedIn)
 

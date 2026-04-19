@@ -12,7 +12,7 @@ Before you start, make sure you have:
 
 1. **A Claude Pro or Max subscription.** The free tier won't work — this needs Claude Code, which is a Pro feature.
 2. **Claude Code installed.** It's Anthropic's terminal app for Claude (different from the Claude Desktop chat app). Install docs: https://docs.claude.com/en/docs/claude-code — the fastest path on macOS/Linux is `npm install -g @anthropic-ai/claude-code`, then run `claude` in a terminal.
-3. **A Mac or Linux machine.** v0.1 targets macOS and Linux. Windows users: the plugin's dependency installer uses bash; you can run it from WSL (Windows Subsystem for Linux) or Git Bash, but it hasn't been tested on native Windows yet.
+3. **A Mac, Linux, or Windows machine.** The setup wizard detects your operating system and runs the correct installer automatically — you don't need to do anything different based on your OS.
 4. **The Claude-in-Chrome extension** (only if you want LinkedIn to work — and you probably do). It's free. Install it from the Chrome Web Store and log into LinkedIn once in that browser.
 5. **About 15 minutes** for the one-time setup.
 

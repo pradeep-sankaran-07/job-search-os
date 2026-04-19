@@ -4,7 +4,9 @@ A guided, automated job-search workflow that lives inside Claude Code. Built for
 
 Default search region: **Norway + Nordics + Remote Europe** (the Finn.no adapter is Norway-specific; the other sources are region-agnostic).
 
-**Platform support (v0.1):** macOS and Linux. Windows users can run it via WSL or Git Bash, but it hasn't been tested natively.
+**Platform support:** macOS, Linux, and Windows. The setup wizard detects your OS and runs the right installer automatically — no user intervention needed.
+
+**One-page setup guide**: [docs/Job-Search-OS-Setup-Guide.pdf](docs/Job-Search-OS-Setup-Guide.pdf) — share this with friends who want to install it.
 
 ---
 

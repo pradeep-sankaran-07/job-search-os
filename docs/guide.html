@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Job Search OS — one-page setup guide</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  :root {
+    --bg: #fdf9f1;
+    --ink: #0f0f0f;
+    --muted: #555;
+    --panel: #ffffff;
+    --panel-dark: #1a1a1a;
+    --accent: #b34e1a;        /* Oslo-leaning burnt orange */
+    --accent-soft: #ffe3cf;
+    --rule: #e3dccb;
+    --green: #0b6b3a;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.38;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 12mm 12mm 0 12mm;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 4.5mm;
+  }
+
+  /* Header */
+  .header {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 6mm;
+    align-items: stretch;
+  }
+
+  .title-block h1 {
+    font-size: 24pt;
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: -0.5px;
+    font-weight: 800;
+  }
+  .title-block .subtitle {
+    font-size: 12pt;
+    color: var(--muted);
+    margin-top: 1.2mm;
+  }
+  .title-block .spark {
+    color: var(--accent);
+    font-size: 14pt;
+    margin-right: 3px;
+    vertical-align: -1px;
+  }
+  .title-block .lede {
+    margin-top: 4mm;
+    font-size: 10.5pt;
+    color: var(--ink);
+  }
+  .title-block .lede strong { font-weight: 700; }
+
+  /* Morning card */
+  .morning {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 4mm;
+    padding: 4mm 4.5mm;
+    font-size: 9pt;
+  }
+  .morning .tag {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 1mm 2.5mm;
+    border-radius: 10mm;
+    letter-spacing: 0.5px;
+    margin-bottom: 2.5mm;
+    text-transform: uppercase;
+  }
+  .morning h3 {
+    font-size: 10pt;
+    margin: 0 0 2mm 0;
+    font-weight: 700;
+  }
+  .morning ul { margin: 0; padding: 0; list-style: none; }
+  .morning li {
+    padding: 0.9mm 0;
+    display: flex;
+    gap: 2mm;
+  }
+  .morning li .k {
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Problem / does row */
+  .row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+  }
+  .box {
+    border-radius: 3mm;
+    padding: 3.5mm 4mm;
+    font-size: 9.2pt;
+  }
+  .box h4 {
+    margin: 0 0 1.5mm 0;
+    font-size: 10pt;
+    font-weight: 700;
+  }
+  .box.problem {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+  }
+  .box.solution {
+    background: var(--panel-dark);
+    color: #f4f1ea;
+  }
+  .box .badge {
+    display: inline-block;
+    font-size: 7.8pt;
+    letter-spacing: 0.4px;
+    padding: 0.6mm 2mm;
+    border-radius: 2mm;
+    margin-bottom: 1.5mm;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .box.problem .badge { color: var(--accent); background: var(--accent-soft); }
+  .box.solution .badge { color: #0f0f0f; background: #ffe3cf; }
+
+  /* Section heading */
+  .sec {
+    font-size: 8.5pt;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2mm;
+  }
+
+  /* Action grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3mm;
+    padding: 3.2mm 3.5mm;
+  }
+  .card .step {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 7.5pt;
+    padding: 0.5mm 1.8mm;
+    border-radius: 1.5mm;
+    margin-bottom: 1.8mm;
+  }
+  .card h5 {
+    margin: 0 0 1.2mm 0;
+    font-size: 10pt;
+    font-weight: 700;
+  }
+  .card p {
+    margin: 0;
+    font-size: 8.8pt;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .card .where {
+    margin-top: 1.8mm;
+    font-size: 7.8pt;
+    color: var(--accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* Install + numbers row */
+  .install {
+    background: var(--panel-dark);
+    color: #f4f1ea;
+    border-radius: 3mm;
+    padding: 4.5mm 5mm;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 6mm;
+    align-items: center;
+  }
+  .install h4 {
+    margin: 0 0 2mm 0;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .install ol {
+    margin: 0;
+    padding-left: 4.5mm;
+    font-size: 9pt;
+  }
+  .install ol li { margin-bottom: 1.2mm; }
+  .install code {
+    background: #000;
+    color: #ffc797;
+    padding: 0.6mm 1.4mm;
+    border-radius: 1mm;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.5pt;
+  }
+  .install .block {
+    background: #000;
+    color: #ffc797;
+    border-radius: 2mm;
+    padding: 2.5mm 3mm;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.5pt;
+    line-height: 1.6;
+    white-space: pre;
+    overflow: hidden;
+  }
+  .install .req {
+    color: #cfc8b5;
+    font-size: 8pt;
+    margin-top: 2mm;
+  }
+
+  /* What changes quadrants */
+  .quads {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+  }
+  .quad {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3mm;
+    padding: 3mm 3.5mm;
+    text-align: left;
+  }
+  .quad .big {
+    font-size: 15pt;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .quad .lbl {
+    font-size: 8.5pt;
+    color: var(--muted);
+    margin-top: 1.2mm;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: auto;
+    padding: 3mm 0;
+    border-top: 1px solid var(--rule);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer .left strong { color: var(--ink); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <section class="header">
+    <div class="title-block">
+      <h1><span class="spark">✦</span>The Job Search OS<br><span style="color:var(--muted);font-weight:500;font-size:14pt;">in Claude Code</span></h1>
+      <div class="subtitle">Guided. Automated. Focused on the Norwegian market.</div>
+      <div class="lede">
+        One-time 15-minute setup. Then every morning: your tracker is updated with fresh roles, cover letters are drafted, and you spend <strong>20&nbsp;minutes reviewing</strong> instead of three hours browsing.
+      </div>
+    </div>
+
+    <aside class="morning">
+      <span class="tag">Your morning after setup</span>
+      <h3>Open Claude Code. Type <code style="font-size:9pt;background:#f3ecdc;padding:0.6mm 1.6mm;border-radius:1mm;">/job-search</code>.</h3>
+      <ul>
+        <li><span class="k">New roles</span>&nbsp;fetched overnight from Finn, LinkedIn, Indeed, Glassdoor</li>
+        <li><span class="k">Each one</span>&nbsp;verified live (no dead links) and rated Strong / Moderate</li>
+        <li><span class="k">Cover letter</span>&nbsp;pre-drafted for every strong fit, in your voice</li>
+        <li><span class="k">Outreach note</span>&nbsp;drafted for a LinkedIn referral before you apply</li>
+      </ul>
+    </aside>
+  </section>
+
+  <!-- PROBLEM / DOES -->
+  <section class="row2">
+    <div class="box problem">
+      <span class="badge">The problem</span>
+      <h4>Manual job search burns hours</h4>
+      Finn.no, LinkedIn, Indeed — the same search run three different ways every morning. Then rewriting the same cover letter. Dead links. Roles you already saw. Cover letters that sound like ChatGPT. The signal is buried in noise.
+    </div>
+    <div class="box solution">
+      <span class="badge">What this does</span>
+      <h4>One plugin, four sources, every morning</h4>
+      A Claude Code plugin searches the major Norwegian + European boards every day, against your profile. Every match is verified live in a real browser. Every strong fit gets a first-draft cover letter in your voice. The tracker updates itself.
+    </div>
+  </section>
+
+  <!-- THE SYSTEM IN ACTION -->
+  <section>
+    <div class="sec">The system in action</div>
+    <div class="cards">
+      <div class="card">
+        <span class="step">1</span>
+        <h5>Drop your CV</h5>
+        <p>Paste or drag your CV in. Claude reads it, offers to polish, saves both versions.</p>
+        <div class="where">In Claude Code</div>
+      </div>
+      <div class="card">
+        <span class="step">2</span>
+        <h5>Build your profile</h5>
+        <p>8 short questions: titles, locations, seniority, dealbreakers. Saved to profile.yaml.</p>
+        <div class="where">In Claude Code</div>
+      </div>
+      <div class="card">
+        <span class="step">3</span>
+        <h5>Target companies</h5>
+        <p>Paste the generated prompt into Claude.ai Research. Drop the list back into your folder.</p>
+        <div class="where">One handoff to Claude.ai</div>
+      </div>
+      <div class="card">
+        <span class="step">4</span>
+        <h5>Daily run</h5>
+        <p>Search · verify · rate · draft letter · update tracker.xlsx and cover-letters.docx.</p>
+        <div class="where">In Claude Code · Daily</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section class="install">
+    <div>
+      <h4>Install (3 commands)</h4>
+      <ol>
+        <li>Install Claude Code: <code>npm i -g @anthropic-ai/claude-code</code></li>
+        <li>In Claude Code, install the plugin (right &rarr;)</li>
+        <li>Run <code>/job-search-setup</code> and follow the wizard.</li>
+      </ol>
+      <div class="req">Requires: Claude Pro or Max · Node.js · Chrome (with the <em>claude-in-chrome</em> extension, for LinkedIn). The setup wizard detects your OS (macOS, Linux, Windows) and installs the rest silently.</div>
+    </div>
+    <div>
+      <div class="block">/plugin marketplace add \
+  pradeep-sankaran-07/job-search-os
+
+/plugin install job-search-os
+
+/job-search-setup</div>
+    </div>
+  </section>
+
+  <!-- WHAT CHANGES -->
+  <section>
+    <div class="sec">What changes</div>
+    <div class="quads">
+      <div class="quad">
+        <div class="big">2h &rarr; 20m</div>
+        <div class="lbl">Daily job-search time, after setup</div>
+      </div>
+      <div class="quad">
+        <div class="big">4 sources</div>
+        <div class="lbl">Finn · LinkedIn · Indeed · Glassdoor</div>
+      </div>
+      <div class="quad">
+        <div class="big">100%</div>
+        <div class="lbl">Of tracker rows verified live</div>
+      </div>
+      <div class="quad">
+        <div class="big">1 tracker</div>
+        <div class="lbl">Excel, auto-updated, yours to edit</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="left"><strong>Job Search OS</strong> &middot; focused on the Norwegian market &middot; open source (MIT)</div>
+    <div>Built by Pradeep Sankaran &middot; Questions? <a href="https://www.linkedin.com/in/pradeep-sankaran">linkedin.com/in/pradeep-sankaran</a></div>
+  </div>
+
+</div>
+</body>
+</html>
