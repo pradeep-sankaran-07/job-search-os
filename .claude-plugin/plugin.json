@@ -1,0 +1,10 @@
+{
+  "name": "job-search-os",
+  "version": "0.1.0",
+  "description": "Job Search OS — a guided, automated job-search workflow in Claude Code. CV intake, profile Q&A, daily multi-source search (Finn.no + LinkedIn + Indeed + Glassdoor), auto-updated tracker, cover letters.",
+  "author": {
+    "name": "Pradeep Sankaran"
+  },
+  "keywords": ["job-search", "career", "automation", "tracker", "linkedin", "finn"],
+  "license": "MIT"
+}

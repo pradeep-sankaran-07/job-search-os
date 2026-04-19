@@ -1,0 +1,13 @@
+{
+  "name": "job-search-os",
+  "owner": {
+    "name": "Pradeep Sankaran"
+  },
+  "plugins": [
+    {
+      "name": "job-search-os",
+      "source": ".",
+      "description": "Guided, automated job-search workflow. CV intake, profile Q&A, daily multi-source search (Finn.no + LinkedIn + Indeed + Glassdoor), auto-updated tracker and cover letters."
+    }
+  ]
+}

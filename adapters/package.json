@@ -1,0 +1,9 @@
+{
+  "name": "job-search-os-adapters",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local playwright-core install for verify_url.js, so the URL verifier works on any machine without relying on @playwright/mcp's nested modules.",
+  "dependencies": {
+    "playwright-core": "^1.44.0"
+  }
+}

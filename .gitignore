@@ -1,0 +1,36 @@
+# Python
+adapters/node_modules/
+adapters/package-lock.json
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Test output
+.pytest_cache/
+.coverage
+htmlcov/
+
+# User data (if someone accidentally clones into their job-search folder)
+tracker.xlsx
+cover-letters.docx
+target-companies.md
+profile.yaml
+cv/
+logs/

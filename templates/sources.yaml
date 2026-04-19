@@ -1,0 +1,28 @@
+# sources.yaml — which job boards the daily search hits, and how.
+# The setup wizard creates this file based on your answers. You can edit
+# it manually any time — just keep it valid YAML.
+
+sources:
+  finn:
+    enabled: true
+    method: playwright           # headless browser, public site, no login
+    search_url: https://www.finn.no/job/fulltime/search.html
+    locale: nb
+    priority: 1                  # order matters for dedup (lower wins on duplicates)
+
+  linkedin:
+    enabled: true
+    method: chrome               # user's logged-in Chrome session (via claude-in-chrome extension)
+    priority: 2
+    requires_extension: true     # setup wizard verifies the extension is installed
+
+  indeed:
+    enabled: true
+    method: jobspy               # best-effort; python-jobspy gets blocked sometimes
+    country_code: norway         # set by setup wizard based on your location
+    priority: 3
+
+  glassdoor:
+    enabled: true
+    method: jobspy               # best-effort
+    priority: 4
