@@ -103,7 +103,7 @@ JobSpy is best-effort — it gets blocked sometimes. Catch exceptions per site/t
 
 ### Target-company career pages (method: playwright, targeted)
 
-For Tier 1 companies from `target-companies.md`, navigate to each careers URL with Playwright MCP and look for roles matching the user's target titles and seniority.
+For Tier 1 companies from the target-companies file (loaded in Step 1), navigate to each careers URL with Playwright MCP and look for roles matching the user's target titles and seniority.
 
 Use `adapters/careers_page.py` helpers:
 - `detect_ats_family(url)` — returns known ATS family (Greenhouse, Lever, Ashby, Workday, Teamtailor, BambooHR, SmartRecruiters, etc.) with suggested title selectors.
@@ -125,7 +125,7 @@ Process all of Tier 1; then Tier 2 if time permits; then Tier 3 if time permits.
 6. Apply location rules from `profile.yaml`:
    - If user's `target_locations` includes "Remote, Europe" or similar, include remote-EU roles freely.
    - Exclude on-site roles outside the user's listed locations.
-   - For hybrid roles in cities not in the user's list: include only if the company appears in `target-companies.md`, else exclude.
+   - For hybrid roles in cities not in the user's list: include only if the company appears in the target-companies file, else exclude.
 
 Log per-source counts (raw hits, survived hard filters, new vs. existing) for the summary.
 
@@ -134,7 +134,7 @@ Log per-source counts (raw hits, survived hard filters, new vs. existing) for th
 For every remaining candidate, run `adapters/verify_url.py` in parallel (asyncio or multiprocessing, up to 8 concurrent):
 
 ```
-python3 adapters/verify_url.py <url> --title <title> --company <company> \
+<python> adapters/verify_url.py <url> --title <title> --company <company> \
     --learnings-file <user_dir>/logs/false_positive_learnings.json
 ```
 
@@ -254,7 +254,7 @@ Write the full summary to `<user_dir>/logs/run-<YYYY-MM-DD>.log` as well.
 ## Failure modes — when to stop and surface
 
 - `profile.yaml` missing or empty → stop; suggest `/job-search-setup`.
-- `target-companies.md` missing → stop; suggest running `/job-search` which routes through onboarding.
+- target-companies file missing (no `Target Companies.pdf` / `target-companies.*` in user_dir) → stop; suggest running `/job-search` which routes through onboarding.
 - No sources enabled → stop; suggest editing `sources.yaml` or re-running setup.
 - Python dependencies missing → run `scripts/install_deps.sh` once (no need to ask), retry.
 

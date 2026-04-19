@@ -80,21 +80,20 @@ What the wizard does, as one continuous flow:
 
 Everything is saved in your job-search folder. Nothing leaves your computer.
 
-### Step 5 — Build your target-companies list (this one happens in Claude chat, not Claude Code)
+### Step 5 — Build your target-companies list (this one happens in Chat mode, not Code mode)
 
-After your profile is saved, the wizard hands you off to **Claude chat** (claude.ai) for one step only. Claude chat has a stronger **Research** mode for multi-source web research.
+After your profile is saved, the wizard hands you off to **Chat mode** in the Claude desktop app for one step only. Chat has a stronger **Research** mode for multi-source web research.
 
 Do this exactly:
 
-1. Open **claude.ai** in your browser. Start a new chat.
+1. In the Claude desktop app, switch to **Chat** mode (the mode selector has Chat / Cowork / Code).
 2. Turn on **Research** mode (the toggle near the chat input).
 3. Paste the prompt the wizard printed in Claude Code — your profile is already included.
 4. Wait 2–5 minutes while Claude researches.
-5. Copy the final company list.
-6. Save it as `target-companies.md` in your job-search folder.
-7. Come back to Claude Code and say *"continue setup"* (or type `/job-search`).
+5. Save Claude's response as `Target Companies.pdf` in your job-search folder. (Easiest way: use the browser's Print → Save as PDF, or Chat's Export if it has one.)
+6. Switch back to **Code** mode and say *"continue setup"* (or type `/job-search`).
 
-**If you don't see a "Research" toggle in Claude chat**: not every account has it yet. You can still paste the prompt into a regular chat — Claude will do an abbreviated version. The result will be smaller but still useful. You can always re-run it later if Research becomes available on your account.
+**If you don't see a "Research" toggle in Chat mode**: not every account has it yet. You can still paste the prompt into a regular chat — Claude will do an abbreviated version. The result will be smaller but still useful. You can always re-run it later if Research becomes available on your account.
 
 ---
 

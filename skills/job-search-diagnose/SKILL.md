@@ -73,7 +73,7 @@ For each, report present/missing and last-modified:
 ### 5. Freshness
 
 - Profile last modified > 90 days ago? Flag as potentially stale.
-- target-companies.md last modified > 180 days ago? Flag.
+- target-companies file last modified > 180 days ago? Flag.
 - Tracker has rows where `Status = "New"` and `Apply By` is in the past? Flag as overdue.
 
 ## Output format
@@ -136,7 +136,7 @@ For each problem, include the exact command to fix it:
 |---|---|
 | No user folder | `/job-search-setup` |
 | No profile | `/job-search-setup` (resumes at profile step) |
-| No target companies | paste deep-research prompt into Claude.ai, save result as target-companies.md |
+| No target companies | Switch to Chat mode in the Claude desktop app, enable Research, paste the prompt, save the result as `Target Companies.pdf` in the job-search folder |
 | Chrome MCP missing | install the Claude-in-Chrome extension |
 | Playwright MCP missing | `claude mcp add playwright -- npx @playwright/mcp@latest` |
 | Python dep missing (macOS / Linux) | `bash <plugin_dir>/scripts/install_deps.sh` |

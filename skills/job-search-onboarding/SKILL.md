@@ -18,6 +18,9 @@ allowed-tools:
   - Bash(npm:*)
   - Bash(npx:*)
   - Bash(claude:*)
+  - Bash(schtasks:*)
+  - Bash(launchctl:*)
+  - Bash(crontab:*)
 ---
 
 You are walking a non-technical user through first-time setup. Be decisive. Batch your questions. Install things without asking. Only interrupt for real user decisions.
@@ -49,7 +52,7 @@ If the run exceeds these, something is wrong — shorten the wizard before shipp
 Check for:
 - `~/.claude/settings.json` → has `jobSearchOs.userDataPath`? If yes, this is a re-run.
 - User data folder exists? What's in it?
-- `tracker.xlsx` present? `profile.yaml` present? `target-companies.md` present?
+- `tracker.xlsx` present? `profile.yaml` present? target-companies file present (any of `Target Companies.pdf`, `target-companies.pdf`, `target-companies.md`, `target-companies.txt`, `target-companies.docx`)?
 - Schedule for `job-search-daily` already registered?
 
 Print a one-line state summary: `"Found existing setup at <path>. Profile: <complete/incomplete>. Tracker: <rows>. Schedule: <on/off>."` and jump to whatever step is missing. No "starting from scratch" for re-runs.
@@ -70,7 +73,7 @@ Then:
   ├── logs/
   └── (files populated later)
   ```
-- If yes to permissions merge: read `<plugin_dir>/.claude-plugin/settings.template.json` and merge its `permissions.allow` list into `~/.claude/settings.json`. Keep the user's existing entries. Add `jobSearchOs.userDataPath` pointing to their folder.
+- If yes to permissions merge: read `<plugin_dir>/.claude-plugin/settings.template.json` and merge **only** its `permissions.allow` list (deduplicated union with the user's existing entries) and its `jobSearchOs` block into `~/.claude/settings.json`. **Do NOT merge any top-level keys that start with `_`** (like `_comment`) — those are documentation in the template, not config. Also set `jobSearchOs.userDataPath` to the folder the user picked (may differ from the template default).
 - Write `sources.yaml` from `<plugin_dir>/templates/sources.yaml`. **After writing, set `sources.indeed.country_code`** based on the user's primary target location (derived in Step 6 after profile Q&A — either re-save here after Q&A, or defer this write until Step 6.1). Valid jobspy country codes: `norway`, `sweden`, `denmark`, `finland`, `germany`, `france`, `netherlands`, `uk`, `usa`, `worldwide` (lowercase). If the user's primary location doesn't map to a jobspy country (e.g. "Remote, Europe"), use `"worldwide"`.
 
 ## Step 3: Install dependencies silently (auto-detect OS)
@@ -86,17 +89,19 @@ Or if Python isn't available yet, use shell detection:
 - `$OS` env var on Windows is `"Windows_NT"`
 - `uname -s` on macOS returns `Darwin`, Linux returns `Linux`
 
-Then run the correct installer in one shot:
+Then run the correct installer in one shot. **IMPORTANT**: the installer writes `<user_dir>/.python-bin` so later skills can skip Python-binary detection. The user_dir comes from the answer to Step 2 question 1, which may not be `~/Documents/job-search` (e.g., on Windows with OneDrive redirect, it could be `~/job-search`). Pass the chosen path through the `JSOS_USER_DIR` environment variable:
 
 **macOS / Linux:**
 ```bash
-bash <plugin_dir>/scripts/install_deps.sh
+JSOS_USER_DIR="<user_dir>" bash <plugin_dir>/scripts/install_deps.sh
 ```
 
 **Windows:**
 ```powershell
-powershell -ExecutionPolicy Bypass -File <plugin_dir>/scripts/install_deps.ps1
+powershell -ExecutionPolicy Bypass -Command "$env:JSOS_USER_DIR='<user_dir>'; & '<plugin_dir>\scripts\install_deps.ps1'"
 ```
+
+If `JSOS_USER_DIR` is not set, the installer falls back to `~/Documents/job-search` — which is wrong if the user picked a different folder. Always set it.
 
 Both scripts install the same things: Python deps (`python-jobspy openpyxl python-docx pandas pyyaml`), the Playwright MCP server, Chromium, and register the MCP with Claude Code. They handle PEP 668 (externally-managed Python) with `--user` and `--break-system-packages` fallbacks.
 
@@ -175,7 +180,11 @@ Run:
 python3 <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx
 ```
 
-Also create an empty `<user_dir>/cover-letters.docx` so later skills can append cleanly.
+Also create a minimally-valid empty `<user_dir>/cover-letters.docx` — a zero-byte file is NOT a valid docx and `python-docx` will raise `PackageNotFoundError` when the daily skill tries to append. Create it via python-docx:
+
+```bash
+<python> -c "from docx import Document; Document().save('<user_dir>/cover-letters.docx')"
+```
 
 Print a one-line summary: "CV ✅  Profile ✅  Tracker ✅  — next we'll pick your target companies."
 
@@ -207,7 +216,7 @@ After printing the block, stop. Wait for the user to come back. Do not continue 
 
 ## Step 9: Schedule the daily run (batch 4 — 2 questions)
 
-Only reach this after the user has come back with `target-companies.md` (could be later, in a separate invocation).
+Only reach this after the user has come back with their target-companies file (e.g. `Target Companies.pdf`) saved in `<user_dir>/` (could be later, in a separate invocation).
 
 Ask (batch 4):
 1. "Run daily automatically?" (options: Yes at 08:00 local / Yes at a different time / No — I'll run manually)
@@ -219,23 +228,27 @@ If yes, try scheduling in this order:
 2. **Fallback**: use the `mcp__scheduled-tasks__create_scheduled_task` MCP tool if present.
 3. **Platform-native fallback**: if neither is available, generate a one-liner the user can run in their native scheduler. Detect the OS first.
 
+   The headless way to trigger a slash command from outside Claude Code is `claude -p "/job-search-daily"` (the `-p` / `--print` flag runs the prompt non-interactively and exits). Use that form in every platform-native scheduler invocation.
+
    **macOS** — print a `launchd` plist and the command to load it:
    ```
    # Save the plist below as ~/Library/LaunchAgents/com.jobsearchos.daily.plist,
    # then run:
    #   launchctl load ~/Library/LaunchAgents/com.jobsearchos.daily.plist
    #
-   # Plist calls `claude` to trigger /job-search-daily on the chosen cron.
+   # The plist's <ProgramArguments> should invoke:
+   #   /usr/local/bin/claude -p "/job-search-daily"
+   # (or wherever `which claude` reports)
    ```
 
    **Linux** — print a `crontab -e` line:
    ```
-   0 8 * * 1-5  claude --slash /job-search-daily
+   0 8 * * 1-5  claude -p "/job-search-daily"
    ```
 
-   **Windows** — print a `schtasks` command the user runs from an elevated terminal once:
+   **Windows** — print a `schtasks` command the user runs from an elevated terminal once. Note the nested quoting so the inner slash-command survives `schtasks` parsing:
    ```
-   schtasks /Create /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 08:00 /TN "Claude Job Search Daily" /TR "claude --slash /job-search-daily"
+   schtasks /Create /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 08:00 /TN "Claude Job Search Daily" /TR "cmd /c claude -p \"/job-search-daily\""
    ```
 
    Tell the user clearly: "Paste the command above into [Terminal / PowerShell] once. After that, the daily run will fire on schedule as long as your computer is on."
@@ -260,7 +273,7 @@ Next steps:
 - Type `/job-search-daily` to run the first search now (takes 15–30 min)
 - Or wait for <next scheduled run>
 
-Everything is saved in <user_dir>. You can open profile.yaml, sources.yaml, or target-companies.md any time to edit. Changes take effect on the next run.
+Everything is saved in <user_dir>. You can open profile.yaml, sources.yaml, or your target-companies file any time to edit. Changes take effect on the next run.
 ```
 
 ## Don't

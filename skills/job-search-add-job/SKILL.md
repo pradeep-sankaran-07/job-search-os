@@ -65,7 +65,7 @@ If any of {title, company, location} cannot be extracted, ask the user for just 
 If a URL was provided, run `adapters/verify_url.py`:
 
 ```bash
-python3 <plugin_dir>/adapters/verify_url.py "<url>" \
+<python> <plugin_dir>/adapters/verify_url.py "<url>" \
     --title "<title>" --company "<company>" \
     --learnings-file <user_dir>/logs/false_positive_learnings.json
 ```

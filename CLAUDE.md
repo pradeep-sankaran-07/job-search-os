@@ -89,6 +89,8 @@ Windows installers ship `python.exe` or `py.exe` — NOT `python3`. When invokin
 
 If the onboarding wizard wrote `<user_dir>/.python-bin`, read that file and use the binary name it contains. The install scripts write this file after they successfully detect Python.
 
+**Special case for the Windows `py` launcher**: if `.python-bin` contains just `py`, always invoke it as `py -3 ...` (not bare `py`) to force Python 3. On machines that still have Python 2 registered, bare `py` can dispatch to Python 2 and imports like `python-jobspy` will fail.
+
 ### Install scripts
 
 | Platform | Command |
@@ -130,10 +132,10 @@ During onboarding, detect this: if `os.path.expanduser("~/Documents")` resolves 
 The preferred order for setting up the daily run:
 1. `/schedule` skill (Anthropic's scheduler, if installed)
 2. `mcp__scheduled-tasks__create_scheduled_task` MCP tool (if connected)
-3. Platform-native fallback with explicit instructions for the user:
-   - **macOS**: write a `launchd` plist the user drops into `~/Library/LaunchAgents/`
-   - **Linux**: print a `crontab -e` line
-   - **Windows**: print a `schtasks /Create /SC WEEKLY /D MON-FRI /ST 08:00 /TN "Claude Job Search" /TR "<path>"` command
+3. Platform-native fallback with explicit instructions for the user. The trigger in every case is `claude -p "/job-search-daily"` (the `-p` / `--print` flag runs a slash command headlessly):
+   - **macOS**: write a `launchd` plist that runs `claude -p "/job-search-daily"` on the chosen cron, tell the user to drop it into `~/Library/LaunchAgents/`
+   - **Linux**: print a `crontab -e` line: `0 8 * * 1-5  claude -p "/job-search-daily"`
+   - **Windows**: print `schtasks /Create /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 08:00 /TN "Claude Job Search" /TR "cmd /c claude -p \"/job-search-daily\""`
 4. Last resort: tell the user "scheduling isn't installed on this machine; you'll need to run `/job-search-daily` each morning yourself" and set `schedule: manual` in `<user_dir>/.schedule.yaml`.
 
 Do NOT just write a cron-syntax yaml and promise the user it'll run — that promise fails silently on Windows.
