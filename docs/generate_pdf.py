@@ -36,7 +36,7 @@ FOOTER_TEMPLATE = """
   padding-top: 3mm;
 ">
   <span>Built by Pradeep Sankaran</span>
-  <span>Questions? <span style="color:#1d1d1f;font-weight:600;">linkedin.com/in/pradeep-sankaran</span></span>
+  <span>Questions? <a href="https://www.linkedin.com/in/pradeep-sankaran" style="color:#1d1d1f;background:#f5f5f7;padding:1mm 2.8mm;border-radius:2mm;text-decoration:none;font-weight:600;">linkedin.com/in/pradeep-sankaran</a></span>
 </div>
 """
 
