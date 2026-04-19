@@ -96,64 +96,92 @@ If no: keep LinkedIn disabled. Tell the user:
 
 Do NOT block the rest of setup on this. Proceed.
 
-## Step 5: CV intake
+## Step 5: Drop CV + build profile (one continuous flow)
 
-Check `<user_dir>/cv/` for any file. If empty:
-- Tell the user: "Drop your CV (PDF or .docx) into `<user_dir>/cv/`, or drag it into this chat." Wait for the file to appear.
-- Read the CV (PDFs via `python-docx` for .docx or a PDF library; fall back to OCR if needed).
-- Extract: name, email, phone, current/last title, location, years of experience.
-- Offer ONE thing: "Want me to sharpen this CV for punch and modern formatting? (yes / no)". This is not a batch — it's a yes/no. Add it to batch 2 instead.
+This is ONE lived experience for the user, not two separate steps. Walk through it without pausing for approval between sub-steps.
 
-If a CV is already there: read it, note "Found `<filename>`".
+### 5a. Take the CV
 
-## Step 6: Profile Q&A (batches 2 and 3)
+Check `<user_dir>/cv/` for any file.
 
-Collect the profile via 2 batches of `AskUserQuestion`.
+- **If empty**: tell the user: "Drop your CV (PDF or .docx) into `<user_dir>/cv/`, or drag it into this chat." Wait for the file to appear.
+- **If a CV is already there**: read it silently, print one line — "Found `<filename>`".
 
-**Batch 2 — the basics** (4 questions):
+Read the CV (PDFs via `python-docx` for .docx or a PDF library; fall back to OCR if needed).
+Extract: name, email, phone, current/last title, location, years of experience, visible strengths (top 3), any obvious weaknesses (1-2, e.g. "no quantified outcomes", "dense paragraphs").
+
+### 5b. Profile Q&A — two batches of four
+
+Collect the profile via 2 batches of `AskUserQuestion`. Ask them immediately after the CV is read — no "shall we continue?" prompt in between.
+
+**Batch 1 — the basics** (4 questions):
 1. "What job titles are you targeting?" (free-text multi-select or "Other" for custom)
 2. "What seniority level?" (IC / Manager / Director / VP / C-level)
 3. "Where will you work?" (multi-select: Norway / Nordic / Remote Europe / Remote Global / Specific city)
-4. "Should I sharpen your CV for you?" (Yes — overwrite existing / Yes — save as new file / No — leave it)
+4. "Should I polish your CV for you?" (Yes — save as a new file alongside the original / No — leave it as is)
 
-**Batch 3 — preferences and filters** (4 questions):
+**Batch 2 — preferences and filters** (4 questions):
 1. "What industries / domains are you interested in?" (multi-select: B2B SaaS / AI / Fintech / Marketplace / Industrial / Healthcare / Other)
 2. "What company stages are okay?" (multi-select: Seed / Series A / Series B / Series C+ / Public / Any)
 3. "Any dealbreakers? What should I NEVER show you?" (multi-select: Crypto/Web3 / Hardware / Consumer goods / Staffing/Contract / Pre-sales / None)
 4. "Paste 1-2 sentences of your own writing (email to a peer, a LinkedIn post, anything) — I'll use it to match your voice in cover letters. Optional — you can skip." (Other for free-text paste; empty = skip)
 
-Write the answers to `<user_dir>/profile.yaml`, filling in the template from `<plugin_dir>/templates/profile.yaml`. Also fill in name/email/phone/linkedin from the CV you read in Step 5.
+### 5c. CV recommendations + polish
 
-## Step 7: Create tracker
+After Batch 1 answers come back, regardless of question 4 answer, print **2-4 concrete, specific recommendations** based on the CV you read in 5a. Examples of good recommendations (adapt to the actual CV):
+
+- "Bullet 3 under your most recent role ('led product team') is vague — replace with a quantified outcome: what shipped, what metric moved, in what timeframe?"
+- "Your summary says 'results-oriented' — cut it; every CV says that. Lead with the one thing that makes your background unusual."
+- "Dates on your 2019 role are missing the end month."
+- "Education section has a typo: 'Universty'."
+
+**If the user said yes to polishing** (Batch 1 Q4): apply those recommendations and save to `<user_dir>/cv/cv_polished.docx` (or `.pdf` matching the original format). Keep the original file untouched. Tell the user: "Saved the polished version as `cv_polished.docx` — original is still there."
+
+**If the user said no**: print the recommendations as a list and tell them: "Saved these as notes — you can ask me to apply them any time: 'Please apply those CV recommendations.'"
+
+### 5d. Write the profile
+
+Write all Batch 1 + Batch 2 answers, plus name/email/phone/linkedin extracted from the CV, to `<user_dir>/profile.yaml`, using `<plugin_dir>/templates/profile.yaml` as the schema.
+
+Also re-save `<user_dir>/sources.yaml` now, filling in `sources.indeed.country_code` from the user's primary target location (see Step 2 for valid values).
+
+### 5e. Create tracker
 
 Run:
 ```bash
 python3 <plugin_dir>/templates/tracker_schema.py <user_dir>/tracker.xlsx
 ```
 
-Also create an empty `<user_dir>/cover-letters.docx` (one paragraph placeholder) so later skills can append cleanly.
+Also create an empty `<user_dir>/cover-letters.docx` so later skills can append cleanly.
 
-## Step 8: Target-companies handoff (one-time, happens on Claude.ai)
+Print a one-line summary: "CV ✅  Profile ✅  Tracker ✅  — next we'll pick your target companies."
 
-Generate the deep-research prompt by reading `<plugin_dir>/templates/deep_research_prompt.md` and filling in the `{{...}}` placeholders from `profile.yaml`.
+## (Step 6 and Step 7 merged into Step 5 above)
 
-Print it in a fenced block with clear instructions:
+## Step 8: Target-companies handoff — explicit, to Claude chat
 
-> **One-time handoff — do this on Claude.ai, not here.**
+Generate the deep-research prompt by reading `<plugin_dir>/templates/deep_research_prompt.md` and filling in the `{{...}}` placeholders from `profile.yaml` (which you just wrote in Step 5d).
+
+Then print this **exact** block to the user — unmistakable sub-steps:
+
+> **This next step happens in Claude chat (claude.ai), not here.**
 >
-> 1. Open https://claude.ai in your browser.
-> 2. Start a new chat. Click the "Research" toggle at the bottom.
-> 3. Paste this prompt (copy it from the block below).
-> 4. Wait 2–5 minutes for research.
-> 5. Copy the final list.
-> 6. Save it as `<user_dir>/target-companies.md`.
-> 7. Come back here and type `/job-search` — I'll pick up from there.
+> Claude chat has a stronger **Research** mode for multi-source web research — that's why we hand off to it once. Follow these steps exactly:
+>
+> 1. Open **claude.ai** in your browser. Start a new chat.
+> 2. Turn on **Research** mode (toggle near the chat input).
+> 3. Paste the prompt below. Wait 2–5 minutes while Claude researches.
+> 4. Copy the final company list from Claude's response.
+> 5. Save it as `target-companies.md` in `<user_dir>/`.
+> 6. Come back here to Claude Code and say "continue setup" — I'll pick up from there.
 >
 > ```
-> [the filled-in prompt]
+> [the filled-in prompt — include the user's profile verbatim]
 > ```
 
-Do NOT try to run the deep research yourself in Claude Code — the whole point is that Claude.ai's Research mode is stronger for this. Don't substitute a WebSearch call.
+Do NOT attempt to run the deep research yourself in Claude Code. Claude Code's WebSearch is thinner than Claude chat's Research mode — silently substituting it would give the user a weaker target list. The honest path is the handoff.
+
+After printing the block, stop. Wait for the user to come back. Do not continue to Step 9 in the same turn.
 
 ## Step 9: Schedule the daily run (batch 4 — 2 questions)
 

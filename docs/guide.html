@@ -97,24 +97,60 @@
   }
 
   /* Install / use */
-  .install p {
-    margin: 0 0 2mm 0;
+  .install ol {
+    margin: 0;
+    padding-left: 5mm;
     font-size: 10.5pt;
   }
-  .install .url {
-    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  .install ol li {
+    margin-bottom: 1.8mm;
+    padding-left: 1mm;
+  }
+  .install ol li:last-child { margin-bottom: 0; }
+  .install a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+  }
+  .install .ask {
+    display: block;
+    margin-top: 1.2mm;
+    padding: 1.5mm 3mm;
+    background: var(--quiet);
+    border-radius: 2mm;
+    font-style: italic;
     font-size: 10pt;
     color: var(--ink);
-    background: var(--quiet);
-    padding: 1.5mm 3mm;
-    border-radius: 2mm;
-    display: inline-block;
   }
   .install .req {
     color: var(--soft);
     font-size: 9pt;
-    margin-top: 2.5mm;
+    margin-top: 3mm;
   }
+
+  /* What actually happens */
+  .happens ul {
+    margin: 0;
+    padding-left: 5mm;
+    font-size: 10pt;
+    color: var(--ink);
+  }
+  .happens ul li {
+    margin-bottom: 1.3mm;
+    padding-left: 0.5mm;
+  }
+  .happens ul li:last-child { margin-bottom: 0; }
+  .happens ul li strong { font-weight: 600; }
+
+  /* Sub-steps inside a step's body */
+  .sub ol {
+    margin: 2mm 0 0 0;
+    padding-left: 5mm;
+    font-size: 9.5pt;
+    color: var(--soft);
+  }
+  .sub ol li { margin-bottom: 0.6mm; }
+  .sub ol li strong { color: var(--ink); font-weight: 600; }
 
   /* Steps */
   .steps {
@@ -178,7 +214,7 @@
     <div class="subtitle">in Claude Code</div>
 
     <p class="hero">
-      A 15-minute, one-time setup by talking to Claude Code. After that, every morning your job tracker is updated with new roles, cover letters are drafted, and you spend 20&nbsp;minutes reviewing instead of three hours browsing.
+      One 15-minute setup. After that, Claude orchestrates your job search every day &mdash; you spend minutes reviewing what lands, not hours on the grunt work. And because it knows your CV, your profile, and your targets, you can ask it for anything: a tailored CV, a re-pitched cover letter, a referral note.
     </p>
   </section>
 
@@ -188,13 +224,13 @@
   <section class="two">
     <div class="col">
       <div class="label">The problem</div>
-      <h3>Manual job search burns hours.</h3>
-      <p>Same searches, different tabs. Rewritten cover letters. Dead links. Roles you already saw. The signal is buried in noise.</p>
+      <h3>The grunt work crowds out the thinking.</h3>
+      <p>Time pressure makes you cut corners. Generic cover letters. Roles you miss. Applications to jobs already filled. The thinking that actually lands interviews gets squeezed out.</p>
     </div>
     <div class="col">
       <div class="label">What it does</div>
-      <h3>Talk to Claude Code. It does the rest.</h3>
-      <p>Searches the main job boards daily against your profile. Drafts a first-draft cover letter for every strong fit. The tracker updates itself.</p>
+      <h3>Claude as your on-standby agent.</h3>
+      <p>Runs the search, writes the letters, tracks the roles. Because it knows everything about you, just ask &mdash; a tailored CV, a custom pitch, a LinkedIn intro, whatever you need.</p>
     </div>
   </section>
 
@@ -202,51 +238,70 @@
 
   <!-- INSTALL -->
   <section class="install">
-    <div class="label">Install and use</div>
-    <p>Install Claude Code, open it, and tell it to install the plugin from the URL below. Claude will ask a few short questions — that is the setup.</p>
-    <div class="url">github.com/pradeep-sankaran-07/job-search-os</div>
-    <div class="req">Works on macOS, Linux, and Windows. Needs Claude Pro or Max and the Chrome browser (with the <em>claude-in-chrome</em> extension, for LinkedIn searches).</div>
+    <div class="label">Install</div>
+    <ol>
+      <li>Install <strong>Claude Code</strong> &mdash; <a href="https://docs.claude.com/en/docs/claude-code">docs.claude.com/en/docs/claude-code</a></li>
+      <li>Make sure you&rsquo;re on <strong>Claude Pro or Max</strong> (required to use Claude Code)</li>
+      <li>Open Claude Code and paste this message:
+        <span class="ask">&ldquo;Can you please install the plugin from github.com/pradeep-sankaran-07/job-search-os and walk me through the setup?&rdquo;</span>
+      </li>
+    </ol>
+    <div class="req">Needs Claude (Pro or Max) and Chrome browser installed. Works on macOS, Linux, and Windows &mdash; the setup auto-detects your OS.</div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- WHAT ACTUALLY HAPPENS -->
+  <section class="happens">
+    <div class="label">What actually happens</div>
+    <ul>
+      <li>Creates a local <strong>folder</strong> on your machine for all your job-search files.</li>
+      <li>Every morning it <strong>searches</strong> Finn, LinkedIn, Indeed, Glassdoor, Google, and your target companies&rsquo; career pages.</li>
+      <li>Fills an <strong>Excel tracker</strong>: each role gets a short summary, a fit rating (Strong / Medium), and a direct link.</li>
+      <li>Drafts a <strong>personalized cover letter</strong> for every Strong match &mdash; in your voice.</li>
+      <li>You open the Excel and update the <strong>Status</strong> column: <em>Apply</em>, <em>Will not apply</em>, or <em>Not a real job</em>. Claude learns from your choices.</li>
+      <li><strong>On demand</strong>: ask Claude for a tailored CV, a tweak to a letter, a LinkedIn outreach &mdash; it knows you.</li>
+      <li><strong>Found a job yourself?</strong> Drop the screenshot into Claude. It adds it to the tracker, writes a letter, rates the fit.</li>
+    </ul>
   </section>
 
   <hr class="rule">
 
   <!-- STEPS -->
   <section>
-    <div class="label">Four steps, all in plain English</div>
+    <div class="label">Three steps, all in plain English</div>
     <div class="steps">
 
       <div class="step">
         <div class="num">1</div>
         <div>
-          <h4>Drop your CV</h4>
-          <p>Claude reads it, offers to polish it, saves both versions for you.</p>
-          <div class="prompt">&ldquo;Here&rsquo;s my CV &mdash; please clean it up and save it for my job search.&rdquo;</div>
+          <h4>Drop your CV + build your profile</h4>
+          <p>Claude reads your CV, asks short questions about what you&rsquo;re looking for (titles, locations, seniority, dealbreakers), and gives you a polished CV back along with a saved profile.</p>
+          <div class="prompt">&ldquo;Here&rsquo;s my CV &mdash; let&rsquo;s set up my job search. Polish it if needed, then ask me what you need to know.&rdquo;</div>
         </div>
       </div>
 
       <div class="step">
         <div class="num">2</div>
         <div>
-          <h4>Build your profile</h4>
-          <p>A few short questions about titles, locations, seniority, and what to avoid.</p>
-          <div class="prompt">&ldquo;Help me set up my job-search profile.&rdquo;</div>
+          <h4>Pick target companies</h4>
+          <p>Claude Code sends you to <strong>Claude chat</strong> (claude.ai) for this &mdash; it has a stronger <em>Research</em> mode.</p>
+          <div class="prompt">&ldquo;Let&rsquo;s figure out my target companies.&rdquo;</div>
+          <div class="sub">
+            <ol>
+              <li>In <strong>Claude chat</strong>, turn on <strong>Research</strong> mode.</li>
+              <li>Paste the prompt Claude Code gives you (your profile is already included).</li>
+              <li>Save the list as <strong>target-companies.md</strong> in your folder and come back.</li>
+            </ol>
+          </div>
         </div>
       </div>
 
       <div class="step">
         <div class="num">3</div>
         <div>
-          <h4>Pick target companies</h4>
-          <p>One quick handoff to Claude.ai Research, then back to Claude Code.</p>
-          <div class="prompt">&ldquo;Help me build my list of target companies.&rdquo;</div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="num">4</div>
-        <div>
           <h4>Your daily run</h4>
-          <p>Overnight search, live-verified matches, draft cover letters in your tracker.</p>
+          <p>Every morning Claude updates your Excel tracker in your folder. Strong-fit cover letters are pre-drafted. You open the Excel and update the Status column &mdash; Apply, Will not apply, or Not a real job.</p>
           <div class="prompt">&ldquo;What&rsquo;s new today?&rdquo;</div>
         </div>
       </div>

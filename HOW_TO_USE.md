@@ -20,7 +20,7 @@ You do **not** need a GitHub account. You do not need to know Python, terminals,
 
 ---
 
-## One-time setup (six steps)
+## One-time setup (five steps)
 
 ### Step 1 — Install Claude Code
 
@@ -54,7 +54,7 @@ Press Enter. Then:
 
 Press Enter. Claude Code downloads the plugin and confirms it's installed.
 
-### Step 4 — Run the setup wizard
+### Step 4 — Run the setup wizard (drop your CV + build your profile in one go)
 
 Type:
 
@@ -62,27 +62,32 @@ Type:
 /job-search-setup
 ```
 
-The wizard will:
-- Pick a folder for your job search (default: `~/Documents/job-search/`)
-- Install the Python libraries it needs (one permission prompt, one command)
-- Ask you to drop your CV into the folder (PDF or Word doc, your choice)
-- Ask about 10 short questions about what you're looking for (title, location, seniority, industries you care about, industries you want to avoid)
-- Help you build a target-companies list (more on this in Step 6 below)
-- Offer to schedule a daily run at 08:00 (you can say no or pick another time)
+Or, in plain English, just tell Claude Code: *"Walk me through setting up my job search."*
+
+What the wizard does, as one continuous flow:
+- Picks a folder for your job search (default: `~/Documents/job-search/`) and installs the Python libraries it needs
+- Asks you to drop your CV into the folder (PDF or Word doc)
+- Reads your CV and asks about 8 short questions in two batches — titles, locations, seniority, industries you like, industries to avoid, and a sample of your own writing (for cover-letter voice)
+- Gives you 2–4 concrete recommendations for your CV and (if you want) saves a polished version alongside the original
+- Saves your profile and creates your tracker
 
 Everything is saved in your job-search folder. Nothing leaves your computer.
 
-### Step 5 — Drop your CV
+### Step 5 — Build your target-companies list (this one happens in Claude chat, not Claude Code)
 
-When the wizard asks, drag your CV file into the Claude Code window, or just save it to `~/Documents/job-search/cv/cv.pdf`. Claude will read it and offer to polish it — you can accept or skip.
+After your profile is saved, the wizard hands you off to **Claude chat** (claude.ai) for one step only. Claude chat has a stronger **Research** mode for multi-source web research.
 
-### Step 6 — Build your target-companies list (this one happens in Claude.ai, not Claude Code)
+Do this exactly:
 
-The wizard will give you a prompt — copy it, open https://claude.ai in your browser, paste it into a new chat, and turn on "Research" (the toggle at the bottom of the input). Claude.ai will spend a few minutes researching companies that match your profile and give you back a list. Copy that list into a file called `target-companies.md` in your job-search folder. Back in Claude Code, type `/job-search` and it will pick up from there.
+1. Open **claude.ai** in your browser. Start a new chat.
+2. Turn on **Research** mode (the toggle near the chat input).
+3. Paste the prompt the wizard printed in Claude Code — your profile is already included.
+4. Wait 2–5 minutes while Claude researches.
+5. Copy the final company list.
+6. Save it as `target-companies.md` in your job-search folder.
+7. Come back to Claude Code and say *"continue setup"* (or type `/job-search`).
 
-Why Claude.ai and not Claude Code? Claude.ai has a stronger Research mode for this kind of multi-source web research. Claude Code handles everything else — this is the one handoff.
-
-**If you don't see a "Research" toggle in Claude.ai**: not every account has it yet. You can still paste the prompt into a regular chat — Claude will do an abbreviated version. The result will be smaller but still useful. You can always re-run it later if Research becomes available on your account.
+**If you don't see a "Research" toggle in Claude chat**: not every account has it yet. You can still paste the prompt into a regular chat — Claude will do an abbreviated version. The result will be smaller but still useful. You can always re-run it later if Research becomes available on your account.
 
 ---
 
